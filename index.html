@@ -68,11 +68,42 @@
     </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen p-4 overflow-hidden">
+<body class="flex flex-col items-center justify-center min-h-screen p-4 md:p-8 bg-slate-50 overflow-y-auto w-full">
 
-    <!-- Pantalla de Inicio -->
+    <!-- Login de Comercios -->
+    <main id="loginContainer"
+        class="w-full max-w-[400px] bg-white rounded-[32px] shadow-2xl p-8 md:p-10 border border-slate-100 transition-all duration-500 scale-100">
+        <div class="text-center mb-8">
+            <img src="programa-latidos.png" alt="Logo Programa Latidos" class="h-32 w-auto object-contain mx-auto mb-4">
+            <h1 class="text-2xl font-bold text-slate-800">Acceso Comercio</h1>
+            <p class="text-sm text-slate-500 mt-2">Ingrese sus credenciales para continuar</p>
+        </div>
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 text-left">Usuario</label>
+                <input type="text" id="loginUser" required placeholder="nombrecomercio"
+                    class="input-premium w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 text-left">Contraseña</label>
+                <input type="password" id="loginPass" required placeholder="••••••••"
+                    class="input-premium w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+            </div>
+            <p id="loginError" class="text-rose-500 text-xs font-bold text-center"></p>
+            <button type="submit" id="loginBtn"
+                class="btn-premium w-full mt-2 py-4 rounded-xl text-white text-lg font-bold tracking-wide active:bg-indigo-700 flex items-center justify-center">
+                <span>Ingresar</span>
+            </button>
+        </form>
+    </main>
+
+    <!-- Pantalla de Inicio (Oculta hasta loguearse) -->
     <main id="mainContainer"
-        class="w-full max-w-[400px] md:max-w-4xl bg-white rounded-[32px] shadow-2xl p-8 md:p-12 border border-slate-100 transition-all duration-500 scale-100">
+        class="hidden w-full max-w-[400px] md:max-w-4xl bg-white rounded-[32px] shadow-2xl p-8 md:p-12 border border-slate-100 transition-all duration-500 scale-100 relative">
+        <button id="btnLogout" class="absolute top-6 right-6 text-slate-400 hover:text-rose-500 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            Salir
+        </button>
 
         <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
 
@@ -232,15 +263,14 @@
 
             try {
                 const url = `https://script.google.com/macros/s/AKfycbyo5DjG58q5tRDL-A2dQDyIiOHE1h5l9HM9IGmtjA-K-guUSDrVJfU6E8IrLJB1j6OXGw/exec?dni=${dni}`;
-
-                // Opción 1: Confiar plenamente en el flag 'apto' que devuelve el API
-                // Opción 2: Realizar validación extendida si el API devuelve el estado y FPP.
-                // En este caso, según el constructor.md, procesamos el JSON {apto: boolean, mensaje: string, color: string}.
-
                 const response = await fetch(url);
                 const data = await response.json();
 
-                // Simulamos un pequeño retardo para que la transición no sea tan brusca
+                // Registrar consulta en Firestore
+                if (window.logConsulta) {
+                    window.logConsulta(dni, data);
+                }
+
                 setTimeout(() => {
                     handleResponse(data);
                 }, 300);
@@ -315,11 +345,100 @@
             dniInput.focus();
         }
     </script>
-    <footer class="fixed bottom-6 left-0 w-full text-center pointer-events-none px-4">
-        <p class="font-black text-slate-500 text-[10px] uppercase tracking-[0.2em] opacity-80 py-2 inline-block">
+    <footer class="mt-8 text-center px-4 w-full max-w-4xl mx-auto flex-shrink-0">
+        <p class="font-black text-slate-400 text-[10px] md:text-xs uppercase tracking-[0.2em] opacity-80 py-2 inline-block bg-white/50 px-4 rounded-full">
             PRODUCTO DESARROLLADO POR LA SUBSECRETARÍA DE ESTADÍSTICA
         </p>
     </footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
+            authDomain: "programa-latidos.firebaseapp.com",
+            projectId: "programa-latidos",
+            storageBucket: "programa-latidos.firebasestorage.app",
+            messagingSenderId: "205268087010",
+            appId: "1:205268087010:web:1f7bb406fbae3fb024aebb",
+            measurementId: "G-RGLDFG6SS7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUserComercio = null;
+
+        const authLoginContainer = document.getElementById('loginContainer');
+        const authMainContainer = document.getElementById('mainContainer');
+        const loginForm = document.getElementById('loginForm');
+        const btnLogout = document.getElementById('btnLogout');
+
+        // Check Auth State
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserComercio = user;
+                authLoginContainer.classList.add('hidden');
+                authMainContainer.classList.remove('hidden');
+            } else {
+                currentUserComercio = null;
+                authLoginContainer.classList.remove('hidden');
+                authMainContainer.classList.add('hidden');
+            }
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        });
+
+        // Login Submit
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userInp = document.getElementById('loginUser').value.trim();
+            const passInp = document.getElementById('loginPass').value;
+            const errorP = document.getElementById('loginError');
+            
+            errorP.textContent = "Verificando...";
+            errorP.classList.remove('hidden', 'text-rose-500');
+            errorP.classList.add('text-indigo-500');
+            
+            try {
+                // Pseudo email approach
+                const email = userInp.includes('@') ? userInp : `${userInp}@latidos.com`;
+                await signInWithEmailAndPassword(auth, email, passInp);
+                errorP.classList.add('hidden');
+            } catch (error) {
+                console.error("Login failed:", error);
+                errorP.classList.remove('text-indigo-500', 'hidden');
+                errorP.classList.add('text-rose-500');
+                errorP.textContent = "Credenciales incorrectas.";
+            }
+        });
+
+        // Logout
+        btnLogout.addEventListener('click', () => {
+            signOut(auth);
+        });
+
+        // Exponer función de logConsulta al scope global
+        window.logConsulta = async (dni, resultData) => {
+            if (!currentUserComercio) return;
+            try {
+                await addDoc(collection(db, "consultas"), {
+                    comercio_uid: currentUserComercio.uid,
+                    comercio_email: currentUserComercio.email,
+                    dni_consultado: dni,
+                    es_apto: resultData.apto === true || resultData.apto === "true",
+                    mensaje_result: resultData.mensaje || "",
+                    timestamp: serverTimestamp()
+                });
+            } catch(e) {
+                console.error("No se pudo registrar la consulta en DB: ", e);
+            }
+        };
+
+    </script>
 </body>
 
 </html>

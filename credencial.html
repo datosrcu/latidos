@@ -113,7 +113,9 @@
                         </div>
 
                         <div class="py-4 border-t border-slate-100 mt-6">
-                            <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Participante Activa</p>
+                            <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
+                                Participante Activa <span id="cardVencimiento" class="text-slate-500 font-normal normal-case ml-1"></span>
+                            </p>
                             <p class="text-[10px] text-slate-400 mt-1 uppercase">Programa Latidos</p>
                         </div>
                     </div>
@@ -205,8 +207,49 @@
                 if (data.apto === true || data.apto === "true") {
                     document.getElementById('cardName').textContent = data.nombre.toUpperCase();
                     document.getElementById('cardDni').textContent = data.dni;
+
+                    // Calcular vencimiento si existe FPP
+                    let vencimientoStr = "";
+                    let vencimientoDate = null;
+                    if (data.fpp) {
+                        const fpp = new Date(data.fpp);
+                        // Asegurar tratar como string de base para evitar husos horarios conflictivos si es solo YYYY-MM-DD
+                        // Para prevenir error de dia anterior:
+                        vencimientoDate = new Date(fpp.getFullYear(), fpp.getMonth() + 12, fpp.getDate());
+                        
+                        const day = String(vencimientoDate.getDate()).padStart(2, '0');
+                        const month = String(vencimientoDate.getMonth() + 1).padStart(2, '0');
+                        const year = vencimientoDate.getFullYear();
+                        vencimientoStr = `${day}/${month}/${year}`;
+                        document.getElementById('cardVencimiento').textContent = `hasta el ${vencimientoStr}`;
+                    } else {
+                        document.getElementById('cardVencimiento').textContent = ``;
+                    }
+
                     previewContainer.classList.remove('hidden');
                     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+                    // Guardar registro en Firestore (solo si no existe)
+                    try {
+                        if (window.db && window.doc && window.getDoc && window.setDoc) {
+                            const credRef = window.doc(window.db, "credenciales", data.dni.toString());
+                            const credSnap = await window.getDoc(credRef);
+                            
+                            if (!credSnap.exists()) {
+                                await window.setDoc(credRef, {
+                                    dni: data.dni,
+                                    nombre: data.nombre.toUpperCase(),
+                                    fpp: data.fpp || null,
+                                    vencimientoAsDate: vencimientoDate ? vencimientoDate.toISOString() : null,
+                                    vencimientoFormat: vencimientoStr,
+                                    createdAt: new Date().toISOString()
+                                });
+                            }
+                        }
+                    } catch (dbError) {
+                        console.warn("No se pudo guardar la credencial en Firestore por permisos o error de red.", dbError);
+                    }
+
                 } else {
                     alert('No se encontró una participante apta con ese DNI.');
                 }
@@ -243,6 +286,30 @@
             // Ejecutar la descarga
             html2pdf().set(opt).from(element).save();
         }
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
+            authDomain: "programa-latidos.firebaseapp.com",
+            projectId: "programa-latidos",
+            storageBucket: "programa-latidos.firebasestorage.app",
+            messagingSenderId: "205268087010",
+            appId: "1:205268087010:web:1f7bb406fbae3fb024aebb",
+            measurementId: "G-RGLDFG6SS7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        
+        // Exponer Firebase localmente para fetchAndGenerate
+        window.db = getFirestore(app);
+        window.doc = doc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
     </script>
 </body>
 

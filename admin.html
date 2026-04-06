@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Programa Latidos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+    </style>
+</head>
+
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-100 flex flex-col">
+        <div class="p-6 border-b border-slate-100">
+            <img src="programa-latidos.png" alt="Logo" class="h-16 object-contain mx-auto">
+            <h2 class="text-center font-bold text-slate-800 mt-2">Administración</h2>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('stats')" id="btn-stats" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors bg-indigo-50 text-indigo-700 font-semibold origin-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                Estadísticas
+            </button>
+            <button onclick="switchTab('register')" id="btn-register" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+                Registrar Comercio
+            </button>
+            <div class="h-px bg-slate-100 my-4"></div>
+            <a href="credencial.html" target="_blank" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+                Crear Credencial
+            </a>
+            <a href="index.html" target="_blank" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                Ir a Validador
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-10">
+
+        <!-- Tab: Estadísticas -->
+        <div id="tab-stats" class="tab-content active space-y-8">
+            <h1 class="text-3xl font-black text-slate-800">Dashboard de Estadísticas</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Cards -->
+                <div class="stat-card">
+                    <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Alcance</p>
+                    <p id="stat-alcance" class="text-4xl font-black text-slate-800 mt-2">-</p>
+                    <p class="text-xs text-slate-500 mt-1">Beneficiarias registradas</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-sm font-bold text-emerald-500 uppercase tracking-wider">Activas vs Inactivas</p>
+                    <p class="text-4xl font-black text-slate-800 mt-2">
+                        <span id="stat-activas" class="text-emerald-500">-</span> 
+                        <span class="text-slate-300 text-2xl">/</span> 
+                        <span id="stat-inactivas" class="text-rose-400 text-2xl">-</span>
+                    </p>
+                    <p class="text-xs text-slate-500 mt-1">Según vencimiento</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-sm font-bold text-indigo-500 uppercase tracking-wider">Comercios</p>
+                    <p id="stat-comercios" class="text-4xl font-black text-slate-800 mt-2">-</p>
+                    <p class="text-xs text-slate-500 mt-1">Adheridos al sistema</p>
+                </div>
+                <div class="stat-card">
+                    <p class="text-sm font-bold text-violet-500 uppercase tracking-wider">Consultas</p>
+                    <p id="stat-consultas" class="text-4xl font-black text-slate-800 mt-2">-</p>
+                    <p class="text-xs text-slate-500 mt-1">Realizadas por comercios</p>
+                </div>
+            </div>
+
+            <!-- Tabla de Consultas (1ra) -->
+            <div class="stat-card mt-8">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Últimas Consultas en Comercios</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
+                            <tr>
+                                <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha</th>
+                                <th class="px-6 py-4 font-bold">Comercio</th>
+                                <th class="px-6 py-4 font-bold">DNI Consultado</th>
+                                <th class="px-6 py-4 font-bold rounded-tr-lg">Resultado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-consultas" class="divide-y divide-slate-100">
+                            <tr><td colspan="4" class="px-6 py-4 text-center">Cargando datos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabla de Comercios Adheridos (2da) -->
+            <div class="stat-card mt-8">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Comercios Adheridos</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
+                            <tr>
+                                <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha de Alta</th>
+                                <th class="px-6 py-4 font-bold">Nombre del Comercio</th>
+                                <th class="px-6 py-4 font-bold rounded-tr-lg">Cantidad de Consultas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-lista-comercios" class="divide-y divide-slate-100">
+                            <tr><td colspan="3" class="px-6 py-4 text-center">Cargando datos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabla de Usuarios Registrados (3ra) -->
+            <div class="stat-card mt-8">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Registro de Credenciales Creadas</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
+                            <tr>
+                                <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha Creación</th>
+                                <th class="px-6 py-4 font-bold">DNI</th>
+                                <th class="px-6 py-4 font-bold">Nombre Completo</th>
+                                <th class="px-6 py-4 font-bold">Vencimiento</th>
+                                <th class="px-6 py-4 font-bold rounded-tr-lg">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-credenciales" class="divide-y divide-slate-100">
+                            <tr><td colspan="5" class="px-6 py-4 text-center">Cargando datos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Tab: Registrar Comercio -->
+        <div id="tab-register" class="tab-content max-w-lg mx-auto mt-12">
+            <div class="bg-white p-8 md:p-10 rounded-[32px] shadow-2xl border border-slate-100">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-black text-slate-800">Registrar Comercio</h2>
+                    <p class="text-slate-500 mt-2">Cree las credenciales de acceso para la validación</p>
+                </div>
+                
+                <form id="formComercio" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nombre del Comercio</label>
+                        <input type="text" id="regNombre" required class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Usuario de Acceso</label>
+                        <input type="text" id="regUser" required placeholder="ej: superpepe" class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                        <p class="text-xs text-slate-400 mt-1">Sin espacios ni signos raros.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contraseña</label>
+                        <input type="password" id="regPass" required class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                    </div>
+
+                    <div id="regMessage" class="hidden text-sm font-bold text-center p-3 rounded-lg"></div>
+
+                    <button type="submit" id="regBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl text-lg font-bold transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
+                        Crear Comercio
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            document.querySelectorAll('aside nav button').forEach(el => {
+                el.classList.remove('bg-indigo-50', 'text-indigo-700', 'font-semibold');
+                el.classList.add('text-slate-500');
+            });
+            const btn = document.getElementById(`btn-${tabId}`);
+            btn.classList.add('bg-indigo-50', 'text-indigo-700', 'font-semibold');
+            btn.classList.remove('text-slate-500');
+        }
+    </script>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
+            authDomain: "programa-latidos.firebaseapp.com",
+            projectId: "programa-latidos",
+            storageBucket: "programa-latidos.firebasestorage.app",
+            messagingSenderId: "205268087010",
+            appId: "1:205268087010:web:1f7bb406fbae3fb024aebb",
+            measurementId: "G-RGLDFG6SS7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Registro de Comercios
+        const formComercio = document.getElementById('formComercio');
+        formComercio.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('regBtn');
+            const msg = document.getElementById('regMessage');
+            
+            const nombre = document.getElementById('regNombre').value;
+            const user = document.getElementById('regUser').value.trim().toLowerCase();
+            const pass = document.getElementById('regPass').value;
+
+            btn.disabled = true;
+            btn.textContent = "Creando...";
+            msg.classList.add('hidden');
+
+            try {
+                const email = `${user}@latidos.com`;
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                const uid = userCredential.user.uid;
+
+                await setDoc(doc(db, "comercios", uid), {
+                    nombre_comercio: nombre,
+                    username: user,
+                    email: email,
+                    createdAt: new Date().toISOString()
+                });
+
+                // Evitar que el admin quede logueado como el comercio
+                await signOut(auth);
+
+                msg.textContent = "Comercio registrado con éxito.";
+                msg.className = "text-sm font-bold text-center p-3 rounded-lg bg-emerald-50 text-emerald-600 block";
+                formComercio.reset();
+                loadStats(); // Refrescar stats
+            } catch (error) {
+                console.error(error);
+                msg.textContent = "Error: " + error.message;
+                msg.className = "text-sm font-bold text-center p-3 rounded-lg bg-rose-50 text-rose-600 block";
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Crear Comercio";
+            }
+        });
+
+        // Dashboard Stats
+        async function loadStats() {
+            try {
+                // Credenciales
+                const credSnap = await getDocs(collection(db, "credenciales"));
+                const credenciales = [];
+                credSnap.forEach(doc => credenciales.push(doc.data()));
+                
+                document.getElementById('stat-alcance').textContent = credenciales.length;
+
+                let activas = 0;
+                let inactivas = 0;
+                const hoy = new Date();
+
+                const tbCred = document.getElementById('table-credenciales');
+                tbCred.innerHTML = '';
+
+                credenciales.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(cred => {
+                    let estadoStr = "Indeterminado";
+                    let isActiva = true;
+
+                    if (cred.vencimientoAsDate) {
+                        const vDate = new Date(cred.vencimientoAsDate);
+                        if (vDate > hoy) {
+                            activas++;
+                            estadoStr = `<span class="bg-emerald-100 text-emerald-600 px-2 py-1 rounded-md text-xs font-bold uppercase">Activa</span>`;
+                        } else {
+                            inactivas++;
+                            isActiva = false;
+                            estadoStr = `<span class="bg-rose-100 text-rose-600 px-2 py-1 rounded-md text-xs font-bold uppercase">Inactiva</span>`;
+                        }
+                    } else {
+                        // Si no hay vencimiento definimos como activa temporalmente o sumamos a una 3ra fila
+                        activas++;
+                        estadoStr = `<span class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold uppercase">Activa (sin FPP)</span>`;
+                    }
+
+                    const row = `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4">${new Date(cred.createdAt).toLocaleDateString()}</td>
+                            <td class="px-6 py-4 font-bold text-slate-700">${cred.dni}</td>
+                            <td class="px-6 py-4">${cred.nombre}</td>
+                            <td class="px-6 py-4">${cred.vencimientoFormat || 'No indica'}</td>
+                            <td class="px-6 py-4">${estadoStr}</td>
+                        </tr>
+                    `;
+                    tbCred.innerHTML += row;
+                });
+                
+                if (credenciales.length === 0) {
+                    tbCred.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center">No hay credenciales registradas.</td></tr>';
+                }
+
+                document.getElementById('stat-activas').textContent = activas;
+                document.getElementById('stat-inactivas').textContent = inactivas;
+
+                // Comercios
+                const comSnap = await getDocs(collection(db, "comercios"));
+                document.getElementById('stat-comercios').textContent = comSnap.size;
+
+                // Consultas
+                const conQ = query(collection(db, "consultas"), orderBy("timestamp", "desc"));
+                const conSnap = await getDocs(conQ);
+                document.getElementById('stat-consultas').textContent = conSnap.size;
+
+                // Procesar Consultas y Contar por Comercio
+                const tbCon = document.getElementById('table-consultas');
+                tbCon.innerHTML = '';
+                
+                const queryCountsByUid = {};
+                let limit = 0;
+                
+                conSnap.forEach(doc => {
+                    const data = doc.data();
+                    const uid = data.comercio_uid;
+                    if (uid) {
+                        queryCountsByUid[uid] = (queryCountsByUid[uid] || 0) + 1;
+                    }
+
+                    if(limit < 20) { 
+                        const dateStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'Reciente';
+                        const resStr = data.es_apto 
+                            ? `<span class="text-emerald-500 font-bold">APTO</span>` 
+                            : `<span class="text-rose-500 font-bold">NO APTO</span>`;
+                        
+                        const row = `
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 text-xs whitespace-nowrap">${dateStr}</td>
+                                <td class="px-6 py-4 font-semibold text-slate-700">${data.comercio_email ? data.comercio_email.split('@')[0] : 'Desconocido'}</td>
+                                <td class="px-6 py-4 text-slate-700 font-medium">${data.dni_consultado}</td>
+                                <td class="px-6 py-4">${resStr}</td>
+                            </tr>
+                        `;
+                        tbCon.innerHTML += row;
+                        limit++;
+                    }
+                });
+
+                if (conSnap.size === 0) {
+                    tbCon.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center">No hay consultas registradas.</td></tr>';
+                }
+
+                // Generar Tabla de Comercios
+                const tbComercios = document.getElementById('table-lista-comercios');
+                tbComercios.innerHTML = '';
+                
+                comSnap.forEach(doc => {
+                    const com = doc.data();
+                    const uid = doc.id;
+                    const cCount = queryCountsByUid[uid] || 0;
+                    const dateAlta = com.createdAt ? new Date(com.createdAt).toLocaleDateString() : 'Desconocido';
+                    
+                    const row = `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4">${dateAlta}</td>
+                            <td class="px-6 py-4 font-bold text-slate-700">${com.nombre_comercio || com.username}</td>
+                            <td class="px-6 py-4 text-indigo-600 font-black">${cCount}</td>
+                        </tr>
+                    `;
+                    tbComercios.innerHTML += row;
+                });
+                
+                if (comSnap.size === 0) {
+                    tbComercios.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center">No hay comercios registrados.</td></tr>';
+                }
+
+            } catch(e) {
+                console.error("Error loading stats", e);
+            }
+        }
+
+        // Initialize
+        loadStats();
+    </script>
+</body>
+</html>
