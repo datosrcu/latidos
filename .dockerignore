@@ -1,0 +1,6 @@
+.git
+.agents
+.firebaserc
+firebase.json
+firestore.rules
+README.md
