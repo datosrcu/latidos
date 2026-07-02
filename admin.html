@@ -10,10 +10,52 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
             font-family: 'Outfit', sans-serif;
             background-color: #f8fafc;
+        }
+
+        /* ----- CREDENCIAL CSS ----- */
+        .card-container {
+            width: 350px;
+            height: 550px;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 6px solid #6366f1;
+        }
+        .card-accent {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 120px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            z-index: 0;
+        }
+        .logo-container {
+            position: relative;
+            z-index: 10;
+            background: white;
+            padding: 12px;
+            border-radius: 24px;
+            box-shadow: 0 4px 10px -2px rgba(99, 102, 241, 0.2);
+            border: 3px solid #6366f1;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 170px;
+            height: 170px;
+        }
+        .loader-spinner {
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .tab-content {
@@ -42,6 +84,38 @@
 
 <body class="flex h-screen overflow-hidden">
 
+    <!-- Admin Login Overlay -->
+    <div id="adminLoginOverlay" class="fixed inset-0 bg-slate-800 z-[100] flex flex-col items-center justify-center transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-[32px] shadow-2xl w-full max-w-sm text-center border border-slate-100">
+            <img src="programa-latidos.png" alt="Logo" class="h-16 object-contain mx-auto mb-4">
+            <h2 class="text-2xl font-black text-slate-800 mb-6 tracking-tight">Acceso Admin</h2>
+            <form id="adminLoginForm" class="space-y-4">
+                <input type="text" id="adminUser" placeholder="Usuario" class="w-full px-4 py-3 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 bg-slate-50 font-medium text-slate-700">
+                <input type="password" id="adminPass" placeholder="Contraseña" class="w-full px-4 py-3 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 bg-slate-50 font-medium text-slate-700">
+                <p id="adminError" class="text-rose-500 text-xs hidden font-bold animate-bounce">Credenciales incorrectas</p>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-600/20 mt-2 active:scale-95">Ingresar</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        if(sessionStorage.getItem('adminLogged') === 'true') {
+            document.getElementById('adminLoginOverlay').style.display = 'none';
+        } else {
+            document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const u = document.getElementById('adminUser').value;
+                const p = document.getElementById('adminPass').value;
+                if(u === 'programalatidos' && p === 'latidos123') {
+                    sessionStorage.setItem('adminLogged', 'true');
+                    document.getElementById('adminLoginOverlay').style.opacity = '0';
+                    setTimeout(() => document.getElementById('adminLoginOverlay').style.display = 'none', 300);
+                } else {
+                    document.getElementById('adminError').classList.remove('hidden');
+                }
+            });
+        }
+    </script>
+
     <!-- Sidebar -->
     <aside class="w-64 bg-white border-r border-slate-100 flex flex-col">
         <div class="p-6 border-b border-slate-100">
@@ -58,10 +132,10 @@
                 Registrar Comercio
             </button>
             <div class="h-px bg-slate-100 my-4"></div>
-            <a href="credencial.html" target="_blank" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
+            <button onclick="switchTab('credencial')" id="btn-credencial" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
                 Crear Credencial
-            </a>
+            </button>
             <a href="index.html" target="_blank" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                 Ir a Validador
@@ -93,9 +167,13 @@
                     <p class="text-xs text-slate-500 mt-1">Según vencimiento</p>
                 </div>
                 <div class="stat-card">
-                    <p class="text-sm font-bold text-indigo-500 uppercase tracking-wider">Comercios</p>
-                    <p id="stat-comercios" class="text-4xl font-black text-slate-800 mt-2">-</p>
-                    <p class="text-xs text-slate-500 mt-1">Adheridos al sistema</p>
+                    <p class="text-sm font-bold text-indigo-500 uppercase tracking-wider flex justify-between">Comercios <span id="stat-comercios-total" class="text-slate-800 bg-slate-100 px-2 rounded-md">0</span></p>
+                    <p class="text-4xl font-black text-slate-800 mt-2">
+                        <span id="stat-comercios-activos" class="text-indigo-500">-</span> 
+                        <span class="text-slate-300 text-2xl">/</span> 
+                        <span id="stat-comercios-inactivos" class="text-slate-400 text-2xl">-</span>
+                    </p>
+                    <p class="text-xs text-slate-500 mt-1">Activos vs Inactivos</p>
                 </div>
                 <div class="stat-card">
                     <p class="text-sm font-bold text-violet-500 uppercase tracking-wider">Consultas</p>
@@ -107,9 +185,9 @@
             <!-- Tabla de Consultas (1ra) -->
             <div class="stat-card mt-8">
                 <h3 class="text-lg font-bold text-slate-800 mb-4">Últimas Consultas en Comercios</h3>
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
                     <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
+                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
                             <tr>
                                 <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha</th>
                                 <th class="px-6 py-4 font-bold">Comercio</th>
@@ -126,14 +204,18 @@
 
             <!-- Tabla de Comercios Adheridos (2da) -->
             <div class="stat-card mt-8">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Comercios Adheridos</h3>
-                <div class="overflow-x-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-slate-800">Comercios Adheridos</h3>
+                    <input type="text" id="search-comercios" placeholder="Buscar comercio..." class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 w-64">
+                </div>
+                <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
                     <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
+                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
                             <tr>
                                 <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha de Alta</th>
                                 <th class="px-6 py-4 font-bold">Nombre del Comercio</th>
-                                <th class="px-6 py-4 font-bold rounded-tr-lg">Cantidad de Consultas</th>
+                                <th class="px-6 py-4 font-bold">Consultas (Aptos / No Aptos)</th>
+                                <th class="px-6 py-4 font-bold rounded-tr-lg">Estado / Acción</th>
                             </tr>
                         </thead>
                         <tbody id="table-lista-comercios" class="divide-y divide-slate-100">
@@ -145,10 +227,25 @@
 
             <!-- Tabla de Usuarios Registrados (3ra) -->
             <div class="stat-card mt-8">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Registro de Credenciales Creadas</h3>
-                <div class="overflow-x-auto">
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-4 gap-4">
+                    <h3 class="text-lg font-bold text-slate-800">Registro de Credenciales Creadas</h3>
+                    <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
+                        <input type="text" id="search-credenciales" placeholder="Buscar por Nombre o DNI..." class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 w-full sm:w-64">
+                        <select id="filter-estado" class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white">
+                            <option value="todas">Todas</option>
+                            <option value="activas">Activas</option>
+                            <option value="inactivas">Inactivas</option>
+                        </select>
+                        <select id="sort-credenciales" class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white">
+                            <option value="alta_desc">Más recientes (Alta)</option>
+                            <option value="vencimiento_asc">Vencimiento próximo</option>
+                            <option value="vencimiento_desc">Vencimiento lejano</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
                     <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100">
+                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
                             <tr>
                                 <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha Creación</th>
                                 <th class="px-6 py-4 font-bold">DNI</th>
@@ -198,6 +295,66 @@
             </div>
         </div>
 
+        <!-- Tab: Credencial -->
+        <div id="tab-credencial" class="tab-content max-w-md mx-auto mt-12 pb-12">
+            <header class="w-full text-center mb-10">
+                <h1 class="text-3xl font-black text-slate-800 tracking-tight">Generar Credencial</h1>
+                <p class="text-slate-500 mt-2">Busca en la base de datos para emitir en PDF</p>
+                <p id="dniError" class="text-rose-500 text-xs font-bold mt-2 hidden animate-bounce">¡Sin puntos ni espacios!</p>
+            </header>
+
+            <div class="space-y-8">
+                <!-- Formulario de Búsqueda -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+                    <div class="space-y-6">
+                        <input type="tel" id="dniInput" placeholder="DNI Beneficiaria"
+                            class="w-full text-center text-3xl font-bold py-5 px-4 rounded-2xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700 bg-slate-50 focus:bg-white transition-all"
+                            inputmode="numeric">
+                        <button id="btnGenerate" onclick="fetchAndGenerate()"
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl text-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-indigo-600/20">
+                            <span id="btnText">Generar Credencial</span>
+                            <div id="btnLoader" class="hidden w-6 h-6 border-[3px] border-white border-t-transparent rounded-full loader-spinner">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Previsualización de la Credencial -->
+                <div id="previewContainer" class="hidden flex flex-col items-center space-y-6">
+                    <div id="idCard" class="card-container flex flex-col items-center">
+                        <div class="card-accent"></div>
+                        <div class="logo-container">
+                            <img id="cardLogo" src="credencial.png" alt="Logo" class="h-32 w-auto object-contain">
+                        </div>
+                        <div class="mt-12 text-center px-8 w-full flex-grow flex flex-col justify-center">
+                            <p class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400 mb-2">Beneficiaria</p>
+                            <h2 id="cardName" class="text-3xl font-black text-slate-800 leading-tight mb-8">NOMBRE APELLIDO</h2>
+                            <div class="space-y-4">
+                                <div class="flex flex-col items-center">
+                                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">DNI</p>
+                                    <p id="cardDni" class="text-xl font-bold text-slate-700">00.000.000</p>
+                                </div>
+                                <div class="py-4 border-t border-slate-100 mt-6">
+                                    <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
+                                        Participante Activa <span id="cardVencimiento" class="text-slate-500 font-normal normal-case ml-1"></span>
+                                    </p>
+                                    <p class="text-[10px] text-slate-400 mt-1 uppercase">Programa Latidos</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pb-10">
+                            <img id="muniLogo" src="logo-solo.jpg" alt="Logo Municipio" class="h-10 w-auto opacity-70">
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btnDownload" onclick="downloadPDF()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl text-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                    Descargar Credencial (PDF)
+                </button>
+            </div>
+        </div>
+
     </main>
 
     <script>
@@ -210,15 +367,248 @@
                 el.classList.add('text-slate-500');
             });
             const btn = document.getElementById(`btn-${tabId}`);
-            btn.classList.add('bg-indigo-50', 'text-indigo-700', 'font-semibold');
-            btn.classList.remove('text-slate-500');
+            if(btn) {
+                btn.classList.add('bg-indigo-50', 'text-indigo-700', 'font-semibold');
+                btn.classList.remove('text-slate-500');
+            }
         }
+
+        // --- CREDENCIAL LOGIC ---
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyo5DjG58q5tRDL-A2dQDyIiOHE1h5l9HM9IGmtjA-K-guUSDrVJfU6E8IrLJB1j6OXGw/exec';
+
+        function preloadLogo() {
+            const logos = [
+                { id: 'cardLogo', src: 'credencial.png' },
+                { id: 'muniLogo', src: 'logo-solo.jpg' }
+            ];
+            logos.forEach(logoData => {
+                const img = new Image();
+                img.src = logoData.src;
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    const logoEl = document.getElementById(logoData.id);
+                    if (logoEl) logoEl.src = canvas.toDataURL("image/png");
+                };
+            });
+        }
+        window.addEventListener('load', preloadLogo);
+
+        const dniInput = document.getElementById('dniInput');
+        if(dniInput) {
+            dniInput.addEventListener('input', (e) => {
+                if (e.data === '.' || e.data === ',' || e.target.value.includes('.') || e.target.value.includes(',')) {
+                    const errorTip = document.getElementById('dniError');
+                    errorTip.classList.remove('hidden');
+                    setTimeout(() => { errorTip.classList.add('hidden'); }, 3000);
+                }
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            });
+        }
+
+        async function fetchAndGenerate() {
+            const dni = document.getElementById('dniInput').value;
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const previewContainer = document.getElementById('previewContainer');
+            const btnDownload = document.getElementById('btnDownload');
+
+            if (!dni) return alert('Por favor, ingresa un DNI');
+
+            btnText.textContent = 'Buscando...';
+            btnLoader.classList.remove('hidden');
+            previewContainer.classList.add('hidden');
+            btnDownload.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_URL}?dni=${dni}`);
+                const data = await response.json();
+
+                if (data.apto === true || data.apto === "true") {
+                    document.getElementById('cardName').textContent = data.nombre.toUpperCase();
+                    document.getElementById('cardDni').textContent = data.dni;
+                    
+                    let rawFpp = data["Fecha probable del parto"] || data.fpp || data.FPP || null;
+                    if (!rawFpp) {
+                        for (const key in data) {
+                            if (key.toLowerCase().includes('fecha') || key.toLowerCase().includes('parto')) {
+                                rawFpp = data[key]; break;
+                            }
+                        }
+                    }
+
+                    let vencimientoStr = "";
+                    let vencimientoDate = null;
+                    
+                    if (rawFpp) {
+                        let fpp;
+                        if (typeof rawFpp === 'string' && rawFpp.includes('/')) {
+                            const partes = rawFpp.split('/');
+                            if (partes.length === 3 && partes[2].length === 4) {
+                                fpp = new Date(partes[2], partes[1] - 1, partes[0]);
+                            } else {
+                                fpp = new Date(rawFpp);
+                            }
+                        } else { fpp = new Date(rawFpp); }
+
+                        if (!isNaN(fpp.getTime())) {
+                            vencimientoDate = new Date(fpp.getFullYear(), fpp.getMonth() + 12, fpp.getDate());
+                            const day = String(vencimientoDate.getDate()).padStart(2, '0');
+                            const month = String(vencimientoDate.getMonth() + 1).padStart(2, '0');
+                            vencimientoStr = `${day}/${month}/${vencimientoDate.getFullYear()}`;
+                            document.getElementById('cardVencimiento').textContent = `hasta el ${vencimientoStr}`;
+                        } else { document.getElementById('cardVencimiento').textContent = ``; }
+                    } else { document.getElementById('cardVencimiento').textContent = ``; }
+
+                    previewContainer.classList.remove('hidden');
+                    btnDownload.classList.remove('hidden');
+                    
+                    document.getElementById('tab-credencial').scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+                    try {
+                        if (window.db && window.doc && window.getDoc && window.setDoc) {
+                            const credRef = window.doc(window.db, "credenciales", data.dni.toString());
+                            const credSnap = await window.getDoc(credRef);
+                            if (!credSnap.exists()) {
+                                await window.setDoc(credRef, {
+                                    dni: data.dni,
+                                    nombre: data.nombre.toUpperCase(),
+                                    fpp: rawFpp || null,
+                                    vencimientoAsDate: vencimientoDate ? vencimientoDate.toISOString() : null,
+                                    vencimientoFormat: vencimientoStr,
+                                    createdAt: new Date().toISOString()
+                                });
+                                // Refrescar Stats
+                                if(window.loadStats) window.loadStats();
+                            }
+                        }
+                    } catch (dbError) { console.warn("Firestore save err", dbError); }
+                } else { alert('No se encontró una participante apta con ese DNI.'); }
+            } catch (error) { console.error(error); alert('Error de conexión.');
+            } finally {
+                btnText.textContent = 'Generar Credencial';
+                btnLoader.classList.add('hidden');
+            }
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('idCard');
+            const dni = document.getElementById('cardDni').textContent;
+            const opt = {
+                margin: [40, 40],
+                filename: `Credencial_Latidos_${dni}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        // GLOBALS
+        window.fetchAndGenerate = fetchAndGenerate;
+        window.downloadPDF = downloadPDF;
+        window.allCredenciales = [];
+        window.allComercios = [];
+
+        // --- FILTERS LOGIC ---
+        function renderComercios() {
+            const searchTerm = document.getElementById('search-comercios').value.toLowerCase();
+            const tbComercios = document.getElementById('table-lista-comercios');
+            tbComercios.innerHTML = '';
+            let count = 0;
+
+            window.allComercios.forEach(com => {
+                const name = (com.nombre_comercio || com.username).toLowerCase();
+                if (searchTerm && !name.includes(searchTerm)) return;
+
+                const isInactivo = com.inactivo === true;
+                const estadoBtn = isInactivo 
+                    ? `<button onclick="window.toggleComercio('${com.uid}', true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-colors bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 border border-slate-200 hover:border-emerald-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Desactivado</button>`
+                    : `<button onclick="window.toggleComercio('${com.uid}', false)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-colors bg-emerald-50 text-emerald-600 hover:bg-rose-50 hover:text-rose-600 border border-emerald-100 hover:border-rose-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Activo</button>`;
+
+                const row = `
+                    <tr class="hover:bg-slate-50 transition-colors ${isInactivo ? 'opacity-60' : ''}">
+                        <td class="px-6 py-4">${com.dateAlta}</td>
+                        <td class="px-6 py-4 font-bold text-slate-700">${com.nombre_comercio || com.username}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="font-black text-indigo-600 text-base">${com.cCount}</span>
+                                <span class="text-[11px] font-bold text-slate-400 tracking-wide mt-0.5">
+                                    <span class="text-emerald-500">(${com.cApto} Apto)</span> 
+                                    <span class="text-rose-400">(${com.cNoApto} Rechazado)</span>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">${estadoBtn}</td>
+                    </tr>
+                `;
+                tbComercios.innerHTML += row;
+                count++;
+            });
+            if (count === 0) tbComercios.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center">No hay coincidencias.</td></tr>';
+        }
+
+        function renderCredenciales() {
+            const search = document.getElementById('search-credenciales').value.toLowerCase();
+            const estado = document.getElementById('filter-estado').value;
+            const sort = document.getElementById('sort-credenciales').value;
+            const tbCred = document.getElementById('table-credenciales');
+            tbCred.innerHTML = '';
+
+            let filtered = window.allCredenciales.filter(cred => {
+                const nameAndDni = `${cred.nombre} ${cred.dni}`.toLowerCase();
+                if(search && !nameAndDni.includes(search)) return false;
+
+                if(estado === 'activas' && !cred.isActiva) return false;
+                if(estado === 'inactivas' && cred.isActiva) return false;
+
+                return true;
+            });
+
+            filtered.sort((a,b) => {
+                if(sort === 'alta_desc') return new Date(b.createdAt) - new Date(a.createdAt);
+                
+                // Tratar invalid dates enviándolos al final para ordenamiento
+                const dateA = a.vencimientoAsDate ? new Date(a.vencimientoAsDate).getTime() : 0;
+                const dateB = b.vencimientoAsDate ? new Date(b.vencimientoAsDate).getTime() : 0;
+                
+                if(sort === 'vencimiento_asc') return dateA - dateB;
+                if(sort === 'vencimiento_desc') return dateB - dateA;
+                return 0;
+            });
+
+            filtered.forEach(cred => {
+                const row = `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4">${new Date(cred.createdAt).toLocaleDateString()}</td>
+                        <td class="px-6 py-4 font-bold text-slate-700">${cred.dni}</td>
+                        <td class="px-6 py-4">${cred.nombre}</td>
+                        <td class="px-6 py-4">${cred.vencimientoFormat || 'No indica'}</td>
+                        <td class="px-6 py-4">${cred.estadoStr}</td>
+                    </tr>
+                `;
+                tbCred.innerHTML += row;
+            });
+
+            if (filtered.length === 0) tbCred.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center">No hay coincidencias.</td></tr>';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('search-comercios').addEventListener('input', renderComercios);
+            document.getElementById('search-credenciales').addEventListener('input', renderCredenciales);
+            document.getElementById('filter-estado').addEventListener('change', renderCredenciales);
+            document.getElementById('sort-credenciales').addEventListener('change', renderCredenciales);
+        });
+
     </script>
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, setDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
@@ -283,19 +673,13 @@
             try {
                 // Credenciales
                 const credSnap = await getDocs(collection(db, "credenciales"));
-                const credenciales = [];
-                credSnap.forEach(doc => credenciales.push(doc.data()));
-                
-                document.getElementById('stat-alcance').textContent = credenciales.length;
-
+                window.allCredenciales = [];
                 let activas = 0;
                 let inactivas = 0;
                 const hoy = new Date();
 
-                const tbCred = document.getElementById('table-credenciales');
-                tbCred.innerHTML = '';
-
-                credenciales.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(cred => {
+                credSnap.forEach(doc => {
+                    const cred = doc.data();
                     let estadoStr = "Indeterminado";
                     let isActiva = true;
 
@@ -310,33 +694,25 @@
                             estadoStr = `<span class="bg-rose-100 text-rose-600 px-2 py-1 rounded-md text-xs font-bold uppercase">Inactiva</span>`;
                         }
                     } else {
-                        // Si no hay vencimiento definimos como activa temporalmente o sumamos a una 3ra fila
                         activas++;
                         estadoStr = `<span class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold uppercase">Activa (sin FPP)</span>`;
                     }
 
-                    const row = `
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4">${new Date(cred.createdAt).toLocaleDateString()}</td>
-                            <td class="px-6 py-4 font-bold text-slate-700">${cred.dni}</td>
-                            <td class="px-6 py-4">${cred.nombre}</td>
-                            <td class="px-6 py-4">${cred.vencimientoFormat || 'No indica'}</td>
-                            <td class="px-6 py-4">${estadoStr}</td>
-                        </tr>
-                    `;
-                    tbCred.innerHTML += row;
+                    cred.isActiva = isActiva;
+                    cred.estadoStr = estadoStr;
+                    window.allCredenciales.push(cred);
                 });
-                
-                if (credenciales.length === 0) {
-                    tbCred.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center">No hay credenciales registradas.</td></tr>';
-                }
 
+                document.getElementById('stat-alcance').textContent = window.allCredenciales.length;
                 document.getElementById('stat-activas').textContent = activas;
                 document.getElementById('stat-inactivas').textContent = inactivas;
 
+                // Llamar al redibujo de la tabla de credenciales
+                if(window.renderCredenciales) window.renderCredenciales();
+
                 // Comercios
                 const comSnap = await getDocs(collection(db, "comercios"));
-                document.getElementById('stat-comercios').textContent = comSnap.size;
+                document.getElementById('stat-comercios-total').textContent = comSnap.size;
 
                 // Consultas
                 const conQ = query(collection(db, "consultas"), orderBy("timestamp", "desc"));
@@ -347,21 +723,24 @@
                 const tbCon = document.getElementById('table-consultas');
                 tbCon.innerHTML = '';
                 
-                const queryCountsByUid = {};
+                const queriesByUid = {};
                 let limit = 0;
                 
                 conSnap.forEach(doc => {
                     const data = doc.data();
                     const uid = data.comercio_uid;
                     if (uid) {
-                        queryCountsByUid[uid] = (queryCountsByUid[uid] || 0) + 1;
+                        if (!queriesByUid[uid]) queriesByUid[uid] = { total: 0, apto: 0, noApto: 0 };
+                        queriesByUid[uid].total++;
+                        if (data.es_apto) queriesByUid[uid].apto++;
+                        else queriesByUid[uid].noApto++;
                     }
 
                     if(limit < 20) { 
                         const dateStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'Reciente';
                         const resStr = data.es_apto 
-                            ? `<span class="text-emerald-500 font-bold">APTO</span>` 
-                            : `<span class="text-rose-500 font-bold">NO APTO</span>`;
+                            ? `<span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded-md text-[11px] border border-emerald-100 uppercase">(Apto)</span>` 
+                            : `<span class="text-rose-600 font-bold bg-rose-50 px-2 py-1 rounded-md text-[11px] border border-rose-100 uppercase">(Rechazado)</span>`;
                         
                         const row = `
                             <tr class="hover:bg-slate-50 transition-colors">
@@ -380,34 +759,53 @@
                     tbCon.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center">No hay consultas registradas.</td></tr>';
                 }
 
-                // Generar Tabla de Comercios
-                const tbComercios = document.getElementById('table-lista-comercios');
-                tbComercios.innerHTML = '';
-                
+                // Generar Caché de Comercios
+                window.allComercios = [];
+                let cActivos = 0;
+                let cInactivos = 0;
+
                 comSnap.forEach(doc => {
                     const com = doc.data();
-                    const uid = doc.id;
-                    const cCount = queryCountsByUid[uid] || 0;
-                    const dateAlta = com.createdAt ? new Date(com.createdAt).toLocaleDateString() : 'Desconocido';
+                    com.uid = doc.id;
+                    const stats = queriesByUid[com.uid] || { total: 0, apto: 0, noApto: 0 };
+                    com.cCount = stats.total;
+                    com.cApto = stats.apto;
+                    com.cNoApto = stats.noApto;
+                    com.dateAlta = com.createdAt ? new Date(com.createdAt).toLocaleDateString() : 'Desconocido';
                     
-                    const row = `
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4">${dateAlta}</td>
-                            <td class="px-6 py-4 font-bold text-slate-700">${com.nombre_comercio || com.username}</td>
-                            <td class="px-6 py-4 text-indigo-600 font-black">${cCount}</td>
-                        </tr>
-                    `;
-                    tbComercios.innerHTML += row;
+                    if(com.inactivo === true) cInactivos++;
+                    else cActivos++;
+
+                    window.allComercios.push(com);
                 });
                 
-                if (comSnap.size === 0) {
-                    tbComercios.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center">No hay comercios registrados.</td></tr>';
-                }
+                document.getElementById('stat-comercios-activos').textContent = cActivos;
+                document.getElementById('stat-comercios-inactivos').textContent = cInactivos;
+
+                // Llamar al redibujo de la tabla de comercios
+                if(window.renderComercios) window.renderComercios();
 
             } catch(e) {
                 console.error("Error loading stats", e);
             }
         }
+
+        // Expose loadStats so that fetchAndGenerate can call it remotely
+        window.loadStats = loadStats;
+
+        // Global function for toggle
+        window.toggleComercio = async (uid, isCurrentlyInactive) => {
+            try {
+                await updateDoc(doc(db, "comercios", uid), {
+                    inactivo: !isCurrentlyInactive
+                });
+                // Recargar estadísticas para plasmar el cambio visual
+                loadStats();
+            } catch(e) {
+                console.error("No se pudo cambiar el estado del comercio: ", e);
+                alert("Error al actualizar estado. " + e.message);
+            }
+        };
 
         // Initialize
         loadStats();

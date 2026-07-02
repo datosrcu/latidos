@@ -208,22 +208,54 @@
                     document.getElementById('cardName').textContent = data.nombre.toUpperCase();
                     document.getElementById('cardDni').textContent = data.dni;
 
+                    console.log("Datos recibidos de la API:", data);
+
+                    // Buscar el valor de FPP con exactitud de nombre y limpieza
+                    let rawFpp = data["Fecha probable del parto"] || data.fpp || data.FPP || null;
+                    if (!rawFpp) {
+                        for (const key in data) {
+                            if (key.toLowerCase().includes('fecha') || key.toLowerCase().includes('parto')) {
+                                rawFpp = data[key];
+                                break;
+                            }
+                        }
+                    }
+
                     // Calcular vencimiento si existe FPP
                     let vencimientoStr = "";
                     let vencimientoDate = null;
-                    if (data.fpp) {
-                        const fpp = new Date(data.fpp);
-                        // Asegurar tratar como string de base para evitar husos horarios conflictivos si es solo YYYY-MM-DD
-                        // Para prevenir error de dia anterior:
-                        vencimientoDate = new Date(fpp.getFullYear(), fpp.getMonth() + 12, fpp.getDate());
-                        
-                        const day = String(vencimientoDate.getDate()).padStart(2, '0');
-                        const month = String(vencimientoDate.getMonth() + 1).padStart(2, '0');
-                        const year = vencimientoDate.getFullYear();
-                        vencimientoStr = `${day}/${month}/${year}`;
-                        document.getElementById('cardVencimiento').textContent = `hasta el ${vencimientoStr}`;
+                    
+                    if (rawFpp) {
+                        let fpp;
+                        // Si la fecha viene en texto crudo estilo DD/MM/YYYY de Google Sheets
+                        if (typeof rawFpp === 'string' && rawFpp.includes('/')) {
+                            const partes = rawFpp.split('/');
+                            if (partes.length === 3 && partes[2].length === 4) {
+                                // Dia, Mes-1, Año
+                                fpp = new Date(partes[2], partes[1] - 1, partes[0]);
+                            } else {
+                                fpp = new Date(rawFpp);
+                            }
+                        } else {
+                            fpp = new Date(rawFpp);
+                        }
+
+                        // Asegurar tratar como Date validando posibles Invalid Date
+                        if (!isNaN(fpp.getTime())) {
+                            vencimientoDate = new Date(fpp.getFullYear(), fpp.getMonth() + 12, fpp.getDate());
+                            const day = String(vencimientoDate.getDate()).padStart(2, '0');
+                            const month = String(vencimientoDate.getMonth() + 1).padStart(2, '0');
+                            const year = vencimientoDate.getFullYear();
+                            vencimientoStr = `${day}/${month}/${year}`;
+                            
+                            document.getElementById('cardVencimiento').textContent = `hasta el ${vencimientoStr}`;
+                        } else {
+                            document.getElementById('cardVencimiento').textContent = ``;
+                            console.warn("ADVERTENCIA: La API devolvió una fecha, pero el formato es inválido.", rawFpp);
+                        }
                     } else {
                         document.getElementById('cardVencimiento').textContent = ``;
+                        console.warn("ADVERTENCIA: La API devolvió Apto pero el objeto JSON no contiene ninguna propiedad FPP.", data);
                     }
 
                     previewContainer.classList.remove('hidden');
@@ -239,7 +271,7 @@
                                 await window.setDoc(credRef, {
                                     dni: data.dni,
                                     nombre: data.nombre.toUpperCase(),
-                                    fpp: data.fpp || null,
+                                    fpp: rawFpp || null,
                                     vencimientoAsDate: vencimientoDate ? vencimientoDate.toISOString() : null,
                                     vencimientoFormat: vencimientoStr,
                                     createdAt: new Date().toISOString()

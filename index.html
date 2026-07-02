@@ -354,7 +354,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
@@ -379,8 +379,25 @@
         const btnLogout = document.getElementById('btnLogout');
 
         // Check Auth State
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // Verificar si el comercio está activo
+                try {
+                    const docRef = doc(db, "comercios", user.uid);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists() && docSnap.data().inactivo) {
+                        await signOut(auth);
+                        const errorP = document.getElementById('loginError');
+                        errorP.textContent = "Acceso denegado: Su cuenta ha sido deshabilitada.";
+                        errorP.classList.remove('hidden', 'text-indigo-500');
+                        errorP.classList.add('text-rose-500');
+                        document.getElementById('loadingOverlay').classList.add('hidden');
+                        return; // Frenar el pase a la segunda pantalla
+                    }
+                } catch(e) {
+                    console.error("Error validando estado del comercio:", e);
+                }
+
                 currentUserComercio = user;
                 authLoginContainer.classList.add('hidden');
                 authMainContainer.classList.remove('hidden');
