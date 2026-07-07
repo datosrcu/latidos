@@ -303,12 +303,13 @@
                                 <th class="px-6 py-4 font-bold">DNI</th>
                                 <th class="px-6 py-4 font-bold">Nombre Completo</th>
                                 <th class="px-6 py-4 font-bold">Vencimiento</th>
-                                <th class="px-6 py-4 font-bold rounded-tr-lg">Estado</th>
+                                <th class="px-6 py-4 font-bold">Estado</th>
+                                <th class="px-6 py-4 font-bold rounded-tr-lg">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="table-credenciales" class="divide-y divide-slate-100">
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center">Cargando datos...</td>
+                                <td colspan="6" class="px-6 py-4 text-center">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -657,12 +658,19 @@
                         <td class="px-6 py-4">${cred.nombre}</td>
                         <td class="px-6 py-4">${cred.vencimientoFormat || 'No indica'}</td>
                         <td class="px-6 py-4">${cred.estadoStr}</td>
+                        <td class="px-6 py-4">
+                            <button onclick="window.eliminarCredencial('${cred.dni}')" class="text-rose-500 hover:text-rose-700 transition-colors p-1.5 rounded-lg hover:bg-rose-50 flex items-center justify-center" title="Eliminar Credencial">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </td>
                     </tr>
                 `;
                 tbCred.innerHTML += row;
             });
 
-            if (filtered.length === 0) tbCred.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center">No hay coincidencias.</td></tr>';
+            if (filtered.length === 0) tbCred.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center">No hay coincidencias.</td></tr>';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -677,7 +685,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
@@ -698,6 +706,7 @@
         window.doc = doc;
         window.getDoc = getDoc;
         window.setDoc = setDoc;
+        window.deleteDoc = deleteDoc;
 
         // Registro de Comercios
         const formComercio = document.getElementById('formComercio');
@@ -879,6 +888,20 @@
             } catch (e) {
                 console.error("No se pudo cambiar el estado del comercio: ", e);
                 alert("Error al actualizar estado. " + e.message);
+            }
+        };
+
+        // Global function to delete a credential
+        window.eliminarCredencial = async (dni) => {
+            if (confirm(`¿Estás seguro de que deseas eliminar la credencial con DNI ${dni}?`)) {
+                try {
+                    await deleteDoc(doc(db, "credenciales", dni.toString()));
+                    alert("Credencial eliminada exitosamente.");
+                    loadStats(); // Refresh stats and re-render table
+                } catch (error) {
+                    console.error("Error al eliminar credencial:", error);
+                    alert("No se pudo eliminar la credencial: " + error.message);
+                }
             }
         };
 
