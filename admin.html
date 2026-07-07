@@ -28,13 +28,17 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             border: 6px solid #6366f1;
         }
+
         .card-accent {
             position: absolute;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             height: 120px;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
             z-index: 0;
         }
+
         .logo-container {
             position: relative;
             z-index: 10;
@@ -50,12 +54,16 @@
             width: 170px;
             height: 170px;
         }
+
         .loader-spinner {
             border-top-color: transparent;
             animation: spin 0.8s linear infinite;
         }
+
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .tab-content {
@@ -68,8 +76,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .stat-card {
@@ -85,27 +100,32 @@
 <body class="flex h-screen overflow-hidden">
 
     <!-- Admin Login Overlay -->
-    <div id="adminLoginOverlay" class="fixed inset-0 bg-slate-800 z-[100] flex flex-col items-center justify-center transition-opacity duration-300">
+    <div id="adminLoginOverlay"
+        class="fixed inset-0 bg-slate-800 z-[100] flex flex-col items-center justify-center transition-opacity duration-300">
         <div class="bg-white p-8 rounded-[32px] shadow-2xl w-full max-w-sm text-center border border-slate-100">
             <img src="programa-latidos.png" alt="Logo" class="h-16 object-contain mx-auto mb-4">
             <h2 class="text-2xl font-black text-slate-800 mb-6 tracking-tight">Acceso Admin</h2>
             <form id="adminLoginForm" class="space-y-4">
-                <input type="text" id="adminUser" placeholder="Usuario" class="w-full px-4 py-3 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 bg-slate-50 font-medium text-slate-700">
-                <input type="password" id="adminPass" placeholder="Contraseña" class="w-full px-4 py-3 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 bg-slate-50 font-medium text-slate-700">
-                <p id="adminError" class="text-rose-500 text-xs hidden font-bold animate-bounce">Credenciales incorrectas</p>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-600/20 mt-2 active:scale-95">Ingresar</button>
+                <input type="text" id="adminUser" placeholder="Usuario"
+                    class="w-full px-4 py-3 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 bg-slate-50 font-medium text-slate-700">
+                <input type="password" id="adminPass" placeholder="Contraseña"
+                    class="w-full px-4 py-3 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 bg-slate-50 font-medium text-slate-700">
+                <p id="adminError" class="text-rose-500 text-xs hidden font-bold animate-bounce">Credenciales
+                    incorrectas</p>
+                <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-600/20 mt-2 active:scale-95">Ingresar</button>
             </form>
         </div>
     </div>
     <script>
-        if(sessionStorage.getItem('adminLogged') === 'true') {
+        if (sessionStorage.getItem('adminLogged') === 'true') {
             document.getElementById('adminLoginOverlay').style.display = 'none';
         } else {
-            document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            document.getElementById('adminLoginForm').addEventListener('submit', function (e) {
                 e.preventDefault();
                 const u = document.getElementById('adminUser').value;
                 const p = document.getElementById('adminPass').value;
-                if(u === 'programalatidos' && p === 'latidos123') {
+                if (u === 'programalatidos' && p === 'latidos123') {
                     sessionStorage.setItem('adminLogged', 'true');
                     document.getElementById('adminLoginOverlay').style.opacity = '0';
                     setTimeout(() => document.getElementById('adminLoginOverlay').style.display = 'none', 300);
@@ -123,21 +143,41 @@
             <h2 class="text-center font-bold text-slate-800 mt-2">Administración</h2>
         </div>
         <nav class="flex-1 p-4 space-y-2">
-            <button onclick="switchTab('stats')" id="btn-stats" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors bg-indigo-50 text-indigo-700 font-semibold origin-left">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+            <button onclick="switchTab('stats')" id="btn-stats"
+                class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors bg-indigo-50 text-indigo-700 font-semibold origin-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
                 Estadísticas
             </button>
-            <button onclick="switchTab('register')" id="btn-register" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+            <button onclick="switchTab('register')" id="btn-register"
+                class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
                 Registrar Comercio
             </button>
             <div class="h-px bg-slate-100 my-4"></div>
-            <button onclick="switchTab('credencial')" id="btn-credencial" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" /></svg>
+            <button onclick="switchTab('credencial')" id="btn-credencial"
+                class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                </svg>
                 Crear Credencial
             </button>
-            <a href="index.html" target="_blank" class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+            <a href="index.html" target="_blank"
+                class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                </svg>
                 Ir a Validador
             </a>
         </nav>
@@ -149,7 +189,7 @@
         <!-- Tab: Estadísticas -->
         <div id="tab-stats" class="tab-content active space-y-8">
             <h1 class="text-3xl font-black text-slate-800">Dashboard de Estadísticas</h1>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Cards -->
                 <div class="stat-card">
@@ -160,17 +200,18 @@
                 <div class="stat-card">
                     <p class="text-sm font-bold text-emerald-500 uppercase tracking-wider">Activas vs Inactivas</p>
                     <p class="text-4xl font-black text-slate-800 mt-2">
-                        <span id="stat-activas" class="text-emerald-500">-</span> 
-                        <span class="text-slate-300 text-2xl">/</span> 
+                        <span id="stat-activas" class="text-emerald-500">-</span>
+                        <span class="text-slate-300 text-2xl">/</span>
                         <span id="stat-inactivas" class="text-rose-400 text-2xl">-</span>
                     </p>
                     <p class="text-xs text-slate-500 mt-1">Según vencimiento</p>
                 </div>
                 <div class="stat-card">
-                    <p class="text-sm font-bold text-indigo-500 uppercase tracking-wider flex justify-between">Comercios <span id="stat-comercios-total" class="text-slate-800 bg-slate-100 px-2 rounded-md">0</span></p>
+                    <p class="text-sm font-bold text-indigo-500 uppercase tracking-wider flex justify-between">Comercios
+                        <span id="stat-comercios-total" class="text-slate-800 bg-slate-100 px-2 rounded-md">0</span></p>
                     <p class="text-4xl font-black text-slate-800 mt-2">
-                        <span id="stat-comercios-activos" class="text-indigo-500">-</span> 
-                        <span class="text-slate-300 text-2xl">/</span> 
+                        <span id="stat-comercios-activos" class="text-indigo-500">-</span>
+                        <span class="text-slate-300 text-2xl">/</span>
                         <span id="stat-comercios-inactivos" class="text-slate-400 text-2xl">-</span>
                     </p>
                     <p class="text-xs text-slate-500 mt-1">Activos vs Inactivos</p>
@@ -187,7 +228,8 @@
                 <h3 class="text-lg font-bold text-slate-800 mb-4">Últimas Consultas en Comercios</h3>
                 <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
                     <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
+                        <thead
+                            class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
                             <tr>
                                 <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha</th>
                                 <th class="px-6 py-4 font-bold">Comercio</th>
@@ -196,7 +238,9 @@
                             </tr>
                         </thead>
                         <tbody id="table-consultas" class="divide-y divide-slate-100">
-                            <tr><td colspan="4" class="px-6 py-4 text-center">Cargando datos...</td></tr>
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center">Cargando datos...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -206,11 +250,13 @@
             <div class="stat-card mt-8">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold text-slate-800">Comercios Adheridos</h3>
-                    <input type="text" id="search-comercios" placeholder="Buscar comercio..." class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 w-64">
+                    <input type="text" id="search-comercios" placeholder="Buscar comercio..."
+                        class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 w-64">
                 </div>
                 <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
                     <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
+                        <thead
+                            class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
                             <tr>
                                 <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha de Alta</th>
                                 <th class="px-6 py-4 font-bold">Nombre del Comercio</th>
@@ -219,7 +265,9 @@
                             </tr>
                         </thead>
                         <tbody id="table-lista-comercios" class="divide-y divide-slate-100">
-                            <tr><td colspan="3" class="px-6 py-4 text-center">Cargando datos...</td></tr>
+                            <tr>
+                                <td colspan="3" class="px-6 py-4 text-center">Cargando datos...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -230,13 +278,16 @@
                 <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-4 gap-4">
                     <h3 class="text-lg font-bold text-slate-800">Registro de Credenciales Creadas</h3>
                     <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
-                        <input type="text" id="search-credenciales" placeholder="Buscar por Nombre o DNI..." class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 w-full sm:w-64">
-                        <select id="filter-estado" class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white">
+                        <input type="text" id="search-credenciales" placeholder="Buscar por Nombre o DNI..."
+                            class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 w-full sm:w-64">
+                        <select id="filter-estado"
+                            class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white">
                             <option value="todas">Todas</option>
                             <option value="activas">Activas</option>
                             <option value="inactivas">Inactivas</option>
                         </select>
-                        <select id="sort-credenciales" class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white">
+                        <select id="sort-credenciales"
+                            class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white">
                             <option value="alta_desc">Más recientes (Alta)</option>
                             <option value="vencimiento_asc">Vencimiento próximo</option>
                             <option value="vencimiento_desc">Vencimiento lejano</option>
@@ -245,7 +296,8 @@
                 </div>
                 <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
                     <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
+                        <thead
+                            class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
                             <tr>
                                 <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha Creación</th>
                                 <th class="px-6 py-4 font-bold">DNI</th>
@@ -255,12 +307,14 @@
                             </tr>
                         </thead>
                         <tbody id="table-credenciales" class="divide-y divide-slate-100">
-                            <tr><td colspan="5" class="px-6 py-4 text-center">Cargando datos...</td></tr>
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center">Cargando datos...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            
+
         </div>
 
         <!-- Tab: Registrar Comercio -->
@@ -270,25 +324,32 @@
                     <h2 class="text-2xl font-black text-slate-800">Registrar Comercio</h2>
                     <p class="text-slate-500 mt-2">Cree las credenciales de acceso para la validación</p>
                 </div>
-                
+
                 <form id="formComercio" class="space-y-6">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nombre del Comercio</label>
-                        <input type="text" id="regNombre" required class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nombre del
+                            Comercio</label>
+                        <input type="text" id="regNombre" required
+                            class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Usuario de Acceso</label>
-                        <input type="text" id="regUser" required placeholder="ej: superpepe" class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Usuario de
+                            Acceso</label>
+                        <input type="text" id="regUser" required placeholder="ej: superpepe"
+                            class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
                         <p class="text-xs text-slate-400 mt-1">Sin espacios ni signos raros.</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contraseña</label>
-                        <input type="password" id="regPass" required class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                        <label
+                            class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contraseña</label>
+                        <input type="password" id="regPass" required
+                            class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
                     </div>
 
                     <div id="regMessage" class="hidden text-sm font-bold text-center p-3 rounded-lg"></div>
 
-                    <button type="submit" id="regBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl text-lg font-bold transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
+                    <button type="submit" id="regBtn"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl text-lg font-bold transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
                         Crear Comercio
                     </button>
                 </form>
@@ -300,7 +361,8 @@
             <header class="w-full text-center mb-10">
                 <h1 class="text-3xl font-black text-slate-800 tracking-tight">Generar Credencial</h1>
                 <p class="text-slate-500 mt-2">Busca en la base de datos para emitir en PDF</p>
-                <p id="dniError" class="text-rose-500 text-xs font-bold mt-2 hidden animate-bounce">¡Sin puntos ni espacios!</p>
+                <p id="dniError" class="text-rose-500 text-xs font-bold mt-2 hidden animate-bounce">¡Sin puntos ni
+                    espacios!</p>
             </header>
 
             <div class="space-y-8">
@@ -313,7 +375,8 @@
                         <button id="btnGenerate" onclick="fetchAndGenerate()"
                             class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl text-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-indigo-600/20">
                             <span id="btnText">Generar Credencial</span>
-                            <div id="btnLoader" class="hidden w-6 h-6 border-[3px] border-white border-t-transparent rounded-full loader-spinner">
+                            <div id="btnLoader"
+                                class="hidden w-6 h-6 border-[3px] border-white border-t-transparent rounded-full loader-spinner">
                             </div>
                         </button>
                     </div>
@@ -328,15 +391,18 @@
                         </div>
                         <div class="mt-12 text-center px-8 w-full flex-grow flex flex-col justify-center">
                             <p class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400 mb-2">Beneficiaria</p>
-                            <h2 id="cardName" class="text-3xl font-black text-slate-800 leading-tight mb-8">NOMBRE APELLIDO</h2>
+                            <h2 id="cardName" class="text-3xl font-black text-slate-800 leading-tight mb-8">NOMBRE
+                                APELLIDO</h2>
                             <div class="space-y-4">
                                 <div class="flex flex-col items-center">
-                                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">DNI</p>
+                                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">DNI
+                                    </p>
                                     <p id="cardDni" class="text-xl font-bold text-slate-700">00.000.000</p>
                                 </div>
                                 <div class="py-4 border-t border-slate-100 mt-6">
                                     <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
-                                        Participante Activa <span id="cardVencimiento" class="text-slate-500 font-normal normal-case ml-1"></span>
+                                        Participante Activa <span id="cardVencimiento"
+                                            class="text-slate-500 font-normal normal-case ml-1"></span>
                                     </p>
                                     <p class="text-[10px] text-slate-400 mt-1 uppercase">Programa Latidos</p>
                                 </div>
@@ -348,8 +414,13 @@
                     </div>
                 </div>
 
-                <button id="btnDownload" onclick="downloadPDF()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl text-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                <button id="btnDownload" onclick="downloadPDF()"
+                    class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl text-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
                     Descargar Credencial (PDF)
                 </button>
             </div>
@@ -367,7 +438,7 @@
                 el.classList.add('text-slate-500');
             });
             const btn = document.getElementById(`btn-${tabId}`);
-            if(btn) {
+            if (btn) {
                 btn.classList.add('bg-indigo-50', 'text-indigo-700', 'font-semibold');
                 btn.classList.remove('text-slate-500');
             }
@@ -398,7 +469,7 @@
         window.addEventListener('load', preloadLogo);
 
         const dniInput = document.getElementById('dniInput');
-        if(dniInput) {
+        if (dniInput) {
             dniInput.addEventListener('input', (e) => {
                 if (e.data === '.' || e.data === ',' || e.target.value.includes('.') || e.target.value.includes(',')) {
                     const errorTip = document.getElementById('dniError');
@@ -430,7 +501,7 @@
                 if (data.apto === true || data.apto === "true") {
                     document.getElementById('cardName').textContent = data.nombre.toUpperCase();
                     document.getElementById('cardDni').textContent = data.dni;
-                    
+
                     let rawFpp = data["Fecha probable del parto"] || data.fpp || data.FPP || null;
                     if (!rawFpp) {
                         for (const key in data) {
@@ -442,7 +513,7 @@
 
                     let vencimientoStr = "";
                     let vencimientoDate = null;
-                    
+
                     if (rawFpp) {
                         let fpp;
                         if (typeof rawFpp === 'string' && rawFpp.includes('/')) {
@@ -465,7 +536,7 @@
 
                     previewContainer.classList.remove('hidden');
                     btnDownload.classList.remove('hidden');
-                    
+
                     document.getElementById('tab-credencial').scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 
                     try {
@@ -482,12 +553,13 @@
                                     createdAt: new Date().toISOString()
                                 });
                                 // Refrescar Stats
-                                if(window.loadStats) window.loadStats();
+                                if (window.loadStats) window.loadStats();
                             }
                         }
                     } catch (dbError) { console.warn("Firestore save err", dbError); }
                 } else { alert('No se encontró una participante apta con ese DNI.'); }
-            } catch (error) { console.error(error); alert('Error de conexión.');
+            } catch (error) {
+                console.error(error); alert('Error de conexión.');
             } finally {
                 btnText.textContent = 'Generar Credencial';
                 btnLoader.classList.add('hidden');
@@ -525,7 +597,7 @@
                 if (searchTerm && !name.includes(searchTerm)) return;
 
                 const isInactivo = com.inactivo === true;
-                const estadoBtn = isInactivo 
+                const estadoBtn = isInactivo
                     ? `<button onclick="window.toggleComercio('${com.uid}', true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-colors bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 border border-slate-200 hover:border-emerald-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Desactivado</button>`
                     : `<button onclick="window.toggleComercio('${com.uid}', false)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-colors bg-emerald-50 text-emerald-600 hover:bg-rose-50 hover:text-rose-600 border border-emerald-100 hover:border-rose-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Activo</button>`;
 
@@ -560,23 +632,23 @@
 
             let filtered = window.allCredenciales.filter(cred => {
                 const nameAndDni = `${cred.nombre} ${cred.dni}`.toLowerCase();
-                if(search && !nameAndDni.includes(search)) return false;
+                if (search && !nameAndDni.includes(search)) return false;
 
-                if(estado === 'activas' && !cred.isActiva) return false;
-                if(estado === 'inactivas' && cred.isActiva) return false;
+                if (estado === 'activas' && !cred.isActiva) return false;
+                if (estado === 'inactivas' && cred.isActiva) return false;
 
                 return true;
             });
 
-            filtered.sort((a,b) => {
-                if(sort === 'alta_desc') return new Date(b.createdAt) - new Date(a.createdAt);
-                
+            filtered.sort((a, b) => {
+                if (sort === 'alta_desc') return new Date(b.createdAt) - new Date(a.createdAt);
+
                 // Tratar invalid dates enviándolos al final para ordenamiento
                 const dateA = a.vencimientoAsDate ? new Date(a.vencimientoAsDate).getTime() : 0;
                 const dateB = b.vencimientoAsDate ? new Date(b.vencimientoAsDate).getTime() : 0;
-                
-                if(sort === 'vencimiento_asc') return dateA - dateB;
-                if(sort === 'vencimiento_desc') return dateB - dateA;
+
+                if (sort === 'vencimiento_asc') return dateA - dateB;
+                if (sort === 'vencimiento_desc') return dateB - dateA;
                 return 0;
             });
 
@@ -604,11 +676,11 @@
         });
 
     </script>
-    
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
@@ -636,7 +708,7 @@
             e.preventDefault();
             const btn = document.getElementById('regBtn');
             const msg = document.getElementById('regMessage');
-            
+
             const nombre = document.getElementById('regNombre').value;
             const user = document.getElementById('regUser').value.trim().toLowerCase();
             const pass = document.getElementById('regPass').value;
@@ -714,7 +786,7 @@
                 document.getElementById('stat-inactivas').textContent = inactivas;
 
                 // Llamar al redibujo de la tabla de credenciales
-                if(window.renderCredenciales) window.renderCredenciales();
+                if (window.renderCredenciales) window.renderCredenciales();
 
                 // Comercios
                 const comSnap = await getDocs(collection(db, "comercios"));
@@ -728,10 +800,10 @@
                 // Procesar Consultas y Contar por Comercio
                 const tbCon = document.getElementById('table-consultas');
                 tbCon.innerHTML = '';
-                
+
                 const queriesByUid = {};
                 let limit = 0;
-                
+
                 conSnap.forEach(doc => {
                     const data = doc.data();
                     const uid = data.comercio_uid;
@@ -742,12 +814,12 @@
                         else queriesByUid[uid].noApto++;
                     }
 
-                    if(limit < 20) { 
+                    if (limit < 20) {
                         const dateStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'Reciente';
-                        const resStr = data.es_apto 
-                            ? `<span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded-md text-[11px] border border-emerald-100 uppercase">(Apto)</span>` 
+                        const resStr = data.es_apto
+                            ? `<span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded-md text-[11px] border border-emerald-100 uppercase">(Apto)</span>`
                             : `<span class="text-rose-600 font-bold bg-rose-50 px-2 py-1 rounded-md text-[11px] border border-rose-100 uppercase">(Rechazado)</span>`;
-                        
+
                         const row = `
                             <tr class="hover:bg-slate-50 transition-colors">
                                 <td class="px-6 py-4 text-xs whitespace-nowrap">${dateStr}</td>
@@ -778,20 +850,20 @@
                     com.cApto = stats.apto;
                     com.cNoApto = stats.noApto;
                     com.dateAlta = com.createdAt ? new Date(com.createdAt).toLocaleDateString() : 'Desconocido';
-                    
-                    if(com.inactivo === true) cInactivos++;
+
+                    if (com.inactivo === true) cInactivos++;
                     else cActivos++;
 
                     window.allComercios.push(com);
                 });
-                
+
                 document.getElementById('stat-comercios-activos').textContent = cActivos;
                 document.getElementById('stat-comercios-inactivos').textContent = cInactivos;
 
                 // Llamar al redibujo de la tabla de comercios
-                if(window.renderComercios) window.renderComercios();
+                if (window.renderComercios) window.renderComercios();
 
-            } catch(e) {
+            } catch (e) {
                 console.error("Error loading stats", e);
             }
         }
@@ -807,7 +879,7 @@
                 });
                 // Recargar estadísticas para plasmar el cambio visual
                 loadStats();
-            } catch(e) {
+            } catch (e) {
                 console.error("No se pudo cambiar el estado del comercio: ", e);
                 alert("Error al actualizar estado. " + e.message);
             }
@@ -817,4 +889,5 @@
         loadStats();
     </script>
 </body>
+
 </html>
