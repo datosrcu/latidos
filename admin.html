@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -137,10 +137,10 @@
     </script>
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-white border-r border-slate-100 flex flex-col">
+    <aside class="w-64 bg-white border-r border-slate-100 flex flex-col shrink-0">
         <div class="p-6 border-b border-slate-100">
-            <img src="programa-latidos.png" alt="Logo" class="h-16 object-contain mx-auto">
-            <h2 class="text-center font-bold text-slate-800 mt-2">Administración</h2>
+            <img src="programa-latidos.png" alt="Logo" class="h-14 object-contain mx-auto">
+            <h2 class="text-center font-black text-slate-800 mt-2 text-sm uppercase tracking-wider">Panel de Control</h2>
         </div>
         <nav class="flex-1 p-4 space-y-2">
             <button onclick="switchTab('stats')" id="btn-stats"
@@ -150,7 +150,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                Estadísticas
+                Estadísticas y Visitas
             </button>
             <button onclick="switchTab('register')" id="btn-register"
                 class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
@@ -169,7 +169,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
                 </svg>
-                Crear Credencial
+                Emitir Credencial (PDF)
             </button>
             <a href="index.html" target="_blank"
                 class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
@@ -178,138 +178,231 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                 </svg>
-                Ir a Validador
+                Ver Validador Público
             </a>
         </nav>
+        <div class="p-4 border-t border-slate-100">
+            <button onclick="sessionStorage.removeItem('adminLogged'); location.reload();"
+                class="w-full py-2 px-3 text-xs font-bold text-slate-400 hover:text-rose-500 rounded-lg hover:bg-rose-50 transition-colors flex items-center justify-center gap-2">
+                Cerrar Sesión
+            </button>
+        </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto p-10">
+    <main class="flex-1 overflow-y-auto p-8 md:p-10">
 
-        <!-- Tab: Estadísticas -->
-        <div id="tab-stats" class="tab-content active space-y-8">
-            <h1 class="text-3xl font-black text-slate-800">Dashboard de Estadísticas</h1>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Cards -->
-                <div class="stat-card">
-                    <p class="text-sm font-bold text-slate-400 uppercase tracking-wider">Alcance</p>
-                    <p id="stat-alcance" class="text-4xl font-black text-slate-800 mt-2">-</p>
-                    <p class="text-xs text-slate-500 mt-1">Beneficiarias registradas</p>
+        <!-- Tab: Estadísticas y Visitas -->
+        <div id="tab-stats" class="tab-content active space-y-8 max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-black text-slate-800 tracking-tight">Dashboard de Gestión</h1>
+                    <p class="text-slate-500 text-sm mt-1">Métricas de beneficiarias, uso de credenciales y operaciones en comercios</p>
                 </div>
+                <button onclick="loadStats()" class="self-start md:self-auto px-4 py-2 bg-white border border-slate-200 hover:border-indigo-500 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition-all active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Actualizar Datos
+                </button>
+            </div>
+
+            <!-- 4 Tarjetas de Métricas Principales -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1: Alcance -->
                 <div class="stat-card">
-                    <p class="text-sm font-bold text-emerald-500 uppercase tracking-wider">Activas vs Inactivas</p>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Beneficiarias Padrón</p>
+                    <p id="stat-alcance" class="text-4xl font-black text-slate-800 mt-2">-</p>
+                    <p class="text-xs text-slate-500 mt-1">Credenciales emitidas en sistema</p>
+                </div>
+
+                <!-- Card 2: Activas vs Inactivas -->
+                <div class="stat-card">
+                    <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Activas vs Inactivas</p>
                     <p class="text-4xl font-black text-slate-800 mt-2">
                         <span id="stat-activas" class="text-emerald-500">-</span>
-                        <span class="text-slate-300 text-2xl">/</span>
-                        <span id="stat-inactivas" class="text-rose-400 text-2xl">-</span>
+                        <span class="text-slate-300 text-2xl font-light">/</span>
+                        <span id="stat-inactivas" class="text-rose-400 text-2xl font-light">-</span>
                     </p>
-                    <p class="text-xs text-slate-500 mt-1">Según vencimiento</p>
+                    <p class="text-xs text-slate-500 mt-1">Según fecha límite FPP (1 año)</p>
                 </div>
+
+                <!-- Card 3: Comercios Adheridos -->
                 <div class="stat-card">
-                    <p class="text-sm font-bold text-indigo-500 uppercase tracking-wider flex justify-between">Comercios
-                        <span id="stat-comercios-total" class="text-slate-800 bg-slate-100 px-2 rounded-md">0</span></p>
+                    <div class="flex justify-between items-center">
+                        <p class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Comercios</p>
+                        <span id="stat-comercios-total" class="text-xs font-extrabold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">0</span>
+                    </div>
                     <p class="text-4xl font-black text-slate-800 mt-2">
-                        <span id="stat-comercios-activos" class="text-indigo-500">-</span>
-                        <span class="text-slate-300 text-2xl">/</span>
-                        <span id="stat-comercios-inactivos" class="text-slate-400 text-2xl">-</span>
+                        <span id="stat-comercios-activos" class="text-indigo-600">-</span>
+                        <span class="text-slate-300 text-2xl font-light">/</span>
+                        <span id="stat-comercios-inactivos" class="text-slate-400 text-2xl font-light">-</span>
                     </p>
-                    <p class="text-xs text-slate-500 mt-1">Activos vs Inactivos</p>
+                    <p class="text-xs text-slate-500 mt-1">Activos vs Desactivados</p>
                 </div>
-                <div class="stat-card">
-                    <p class="text-sm font-bold text-violet-500 uppercase tracking-wider">Consultas</p>
-                    <p id="stat-consultas" class="text-4xl font-black text-slate-800 mt-2">-</p>
-                    <p class="text-xs text-slate-500 mt-1">Realizadas por comercios</p>
+
+                <!-- Card 4: Operaciones y Conversión -->
+                <div class="stat-card border-indigo-100 bg-gradient-to-br from-white to-indigo-50/30">
+                    <div class="flex justify-between items-center">
+                        <p class="text-xs font-bold text-violet-600 uppercase tracking-wider">Visitas en Locales</p>
+                        <span id="stat-visitas-total" class="text-xs font-extrabold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">0</span>
+                    </div>
+                    <p class="text-3xl font-black text-slate-800 mt-2 flex items-baseline gap-2">
+                        <span id="stat-compras-si" class="text-emerald-600">-</span>
+                        <span class="text-xs font-bold text-slate-400">compró</span>
+                        <span class="text-slate-300 font-light">|</span>
+                        <span id="stat-compras-no" class="text-rose-500">-</span>
+                        <span class="text-xs font-bold text-slate-400">no compró</span>
+                    </p>
+                    <p id="stat-conversion-badge" class="text-xs font-bold text-slate-500 mt-1">
+                        - de efectividad
+                    </p>
                 </div>
             </div>
 
-            <!-- Tabla de Consultas (1ra) -->
-            <div class="stat-card mt-8">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Últimas Consultas en Comercios</h3>
-                <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead
-                            class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
+            <!-- Gráfico de Motivos de No Compra y Resumen -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Columna Izquierda (2 spans): Gráfico de Motivos -->
+                <div class="stat-card lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-black text-slate-800">Motivos por los que No se Compró</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Categorización reportada por las beneficiarias en el punto de venta</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-center gap-6">
+                        <div class="w-full md:w-64 h-64 flex items-center justify-center shrink-0">
+                            <canvas id="chartMotivos"></canvas>
+                        </div>
+                        <div id="resumenMotivosList" class="flex-1 w-full space-y-2 text-xs">
+                            <p class="text-slate-400 text-center py-6">Cargando datos de motivos...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha (1 span): Comercios más Concurridos -->
+                <div class="stat-card">
+                    <h3 class="text-lg font-black text-slate-800 mb-1">Top Comercios Concurridos</h3>
+                    <p class="text-xs text-slate-400 mb-4">Negocios con mayor actividad registrada</p>
+                    <div id="topComerciosList" class="space-y-3 overflow-y-auto max-h-[260px]">
+                        <p class="text-slate-400 text-center text-xs py-4">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLA 1: Registro de Visitas y Operaciones en Comercios (NUEVA) -->
+            <div class="stat-card">
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-4">
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">Registro de Visitas y Operaciones en Comercios</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Detalle en vivo de compras realizadas y motivos de rechazo</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
+                        <input type="text" id="search-visitas" placeholder="Buscar por DNI o Beneficiaria..."
+                            class="px-4 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 w-full sm:w-60">
+                        <select id="filter-visita-resultado"
+                            class="px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 bg-white font-medium text-slate-600">
+                            <option value="todos">Todos los resultados</option>
+                            <option value="si">Solo compras (Sí)</option>
+                            <option value="no">Sin compra (No)</option>
+                        </select>
+                        <select id="filter-visita-comercio"
+                            class="px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 bg-white font-medium text-slate-600">
+                            <option value="todos">Todos los comercios</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto overflow-y-auto max-h-[500px] border border-slate-100 rounded-xl">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="text-[11px] text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                             <tr>
-                                <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha</th>
-                                <th class="px-6 py-4 font-bold">Comercio</th>
-                                <th class="px-6 py-4 font-bold">DNI Consultado</th>
-                                <th class="px-6 py-4 font-bold rounded-tr-lg">Resultado</th>
+                                <th class="px-5 py-3.5 font-bold">Fecha / Hora</th>
+                                <th class="px-5 py-3.5 font-bold">Beneficiaria</th>
+                                <th class="px-5 py-3.5 font-bold">Comercio</th>
+                                <th class="px-5 py-3.5 font-bold">Dirección</th>
+                                <th class="px-5 py-3.5 font-bold">¿Compró?</th>
+                                <th class="px-5 py-3.5 font-bold">Motivo (en caso negativo)</th>
                             </tr>
                         </thead>
-                        <tbody id="table-consultas" class="divide-y divide-slate-100">
+                        <tbody id="table-visitas" class="divide-y divide-slate-100">
                             <tr>
-                                <td colspan="4" class="px-6 py-4 text-center">Cargando datos...</td>
+                                <td colspan="6" class="px-6 py-6 text-center text-slate-400">Cargando registros de visitas...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Tabla de Comercios Adheridos (2da) -->
-            <div class="stat-card mt-8">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-slate-800">Comercios Adheridos</h3>
-                    <input type="text" id="search-comercios" placeholder="Buscar comercio..."
-                        class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 w-64">
+            <!-- TABLA 2: Comercios Adheridos (Con Dirección) -->
+            <div class="stat-card">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">Comercios Adheridos al Programa</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Listado con dirección física para mapeo y auditoría de uso</p>
+                    </div>
+                    <input type="text" id="search-comercios" placeholder="Buscar por nombre o dirección..."
+                        class="px-4 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 w-full sm:w-64">
                 </div>
-                <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead
-                            class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
+                <div class="overflow-x-auto overflow-y-auto max-h-[450px] border border-slate-100 rounded-xl">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="text-[11px] text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                             <tr>
-                                <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha de Alta</th>
-                                <th class="px-6 py-4 font-bold">Nombre del Comercio</th>
-                                <th class="px-6 py-4 font-bold">Consultas (Aptos / No Aptos)</th>
-                                <th class="px-6 py-4 font-bold rounded-tr-lg">Estado / Acción</th>
+                                <th class="px-5 py-3.5 font-bold">Fecha Alta</th>
+                                <th class="px-5 py-3.5 font-bold">Nombre del Comercio</th>
+                                <th class="px-5 py-3.5 font-bold">Dirección para Mapeo</th>
+                                <th class="px-5 py-3.5 font-bold">Visitas (Compras / Sin Compra)</th>
+                                <th class="px-5 py-3.5 font-bold">Estado / Acción</th>
                             </tr>
                         </thead>
                         <tbody id="table-lista-comercios" class="divide-y divide-slate-100">
                             <tr>
-                                <td colspan="3" class="px-6 py-4 text-center">Cargando datos...</td>
+                                <td colspan="5" class="px-6 py-6 text-center text-slate-400">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Tabla de Usuarios Registrados (3ra) -->
-            <div class="stat-card mt-8">
-                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-4 gap-4">
-                    <h3 class="text-lg font-bold text-slate-800">Registro de Credenciales Creadas</h3>
+            <!-- TABLA 3: Credenciales Emitidas -->
+            <div class="stat-card">
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-4">
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">Registro de Credenciales Digitales</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Historial de beneficiarias que han consultado y generado credencial</p>
+                    </div>
                     <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
                         <input type="text" id="search-credenciales" placeholder="Buscar por Nombre o DNI..."
-                            class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 w-full sm:w-64">
+                            class="px-4 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 w-full sm:w-64">
                         <select id="filter-estado"
-                            class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white">
+                            class="px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 bg-white">
                             <option value="todas">Todas</option>
                             <option value="activas">Activas</option>
                             <option value="inactivas">Inactivas</option>
                         </select>
                         <select id="sort-credenciales"
-                            class="px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:border-indigo-500 bg-white">
+                            class="px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 bg-white">
                             <option value="alta_desc">Más recientes (Alta)</option>
                             <option value="vencimiento_asc">Vencimiento próximo</option>
                             <option value="vencimiento_desc">Vencimiento lejano</option>
                         </select>
                     </div>
                 </div>
-                <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
-                    <table class="w-full text-left text-sm text-slate-600">
-                        <thead
-                            class="text-xs text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10 outline outline-1 outline-slate-100">
+                <div class="overflow-x-auto overflow-y-auto max-h-[450px] border border-slate-100 rounded-xl">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="text-[11px] text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                             <tr>
-                                <th class="px-6 py-4 font-bold rounded-tl-lg">Fecha Creación</th>
-                                <th class="px-6 py-4 font-bold">DNI</th>
-                                <th class="px-6 py-4 font-bold">Nombre Completo</th>
-                                <th class="px-6 py-4 font-bold">Vencimiento</th>
-                                <th class="px-6 py-4 font-bold">Estado</th>
-                                <th class="px-6 py-4 font-bold rounded-tr-lg">Acción</th>
+                                <th class="px-5 py-3.5 font-bold">Fecha Creación</th>
+                                <th class="px-5 py-3.5 font-bold">DNI</th>
+                                <th class="px-5 py-3.5 font-bold">Nombre Completo</th>
+                                <th class="px-5 py-3.5 font-bold">Vencimiento</th>
+                                <th class="px-5 py-3.5 font-bold">Estado</th>
+                                <th class="px-5 py-3.5 font-bold">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="table-credenciales" class="divide-y divide-slate-100">
                             <tr>
-                                <td colspan="6" class="px-6 py-4 text-center">Cargando datos...</td>
+                                <td colspan="6" class="px-6 py-6 text-center text-slate-400">Cargando datos...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -318,67 +411,83 @@
 
         </div>
 
-        <!-- Tab: Registrar Comercio -->
-        <div id="tab-register" class="tab-content max-w-lg mx-auto mt-12">
+        <!-- Tab: Registrar Comercio (CON DIRECCIÓN) -->
+        <div id="tab-register" class="tab-content max-w-lg mx-auto mt-8">
             <div class="bg-white p-8 md:p-10 rounded-[32px] shadow-2xl border border-slate-100">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-black text-slate-800">Registrar Comercio</h2>
-                    <p class="text-slate-500 mt-2">Cree las credenciales de acceso para la validación</p>
+                    <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-800">Registrar Comercio Adherido</h2>
+                    <p class="text-slate-500 text-xs mt-1">Cargue los datos del comercio para que figure en la credencial y pueda ser mapeado</p>
                 </div>
 
-                <form id="formComercio" class="space-y-6">
+                <form id="formComercio" class="space-y-5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nombre del
-                            Comercio</label>
-                        <input type="text" id="regNombre" required
-                            class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Usuario de
-                            Acceso</label>
-                        <input type="text" id="regUser" required placeholder="ej: superpepe"
-                            class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
-                        <p class="text-xs text-slate-400 mt-1">Sin espacios ni signos raros.</p>
-                    </div>
-                    <div>
-                        <label
-                            class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Contraseña</label>
-                        <input type="password" id="regPass" required
-                            class="w-full text-lg py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            Nombre del Comercio <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="regNombre" required placeholder="Ej: Pañalera Los Peques"
+                            class="w-full text-base py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
                     </div>
 
-                    <div id="regMessage" class="hidden text-sm font-bold text-center p-3 rounded-lg"></div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            Dirección del Comercio (Calle y N° / Barrio) <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="regDireccion" required placeholder="Ej: Av. San Martín 1234, Centro"
+                            class="w-full text-base py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                        <p class="text-[11px] text-slate-400 mt-1">Dato esencial para la georreferenciación y el mapeo en el sistema.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            Identificador / Usuario de Sistema <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="regUser" required placeholder="ej: panalerapeques"
+                            class="w-full text-base py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                        <p class="text-[11px] text-slate-400 mt-1">Solo letras o números sin espacios ni acentos.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            Contraseña de Seguridad <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="password" id="regPass" required placeholder="••••••••"
+                            class="w-full text-base py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                    </div>
+
+                    <div id="regMessage" class="hidden text-xs font-bold text-center p-3 rounded-xl"></div>
 
                     <button type="submit" id="regBtn"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl text-lg font-bold transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
-                        Crear Comercio
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl text-base font-bold transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
+                        Dar de Alta Comercio
                     </button>
                 </form>
             </div>
         </div>
 
-        <!-- Tab: Credencial -->
-        <div id="tab-credencial" class="tab-content max-w-md mx-auto mt-12 pb-12">
-            <header class="w-full text-center mb-10">
-                <h1 class="text-3xl font-black text-slate-800 tracking-tight">Generar Credencial</h1>
-                <p class="text-slate-500 mt-2">Busca en la base de datos para emitir en PDF</p>
-                <p id="dniError" class="text-rose-500 text-xs font-bold mt-2 hidden animate-bounce">¡Sin puntos ni
-                    espacios!</p>
+        <!-- Tab: Credencial (Generador Manual PDF) -->
+        <div id="tab-credencial" class="tab-content max-w-md mx-auto mt-8 pb-12">
+            <header class="w-full text-center mb-8">
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Emisión Manual de Credencial</h1>
+                <p class="text-slate-500 text-xs mt-1">Busca en el padrón para descargar una credencial en PDF</p>
+                <p id="dniError" class="text-rose-500 text-xs font-bold mt-2 hidden animate-bounce">¡Sin puntos ni espacios!</p>
             </header>
 
-            <div class="space-y-8">
+            <div class="space-y-6">
                 <!-- Formulario de Búsqueda -->
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-                    <div class="space-y-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                    <div class="space-y-4">
                         <input type="tel" id="dniInput" placeholder="DNI Beneficiaria"
-                            class="w-full text-center text-3xl font-bold py-5 px-4 rounded-2xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700 bg-slate-50 focus:bg-white transition-all"
+                            class="w-full text-center text-2xl font-bold py-4 px-4 rounded-2xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700 bg-slate-50 focus:bg-white transition-all"
                             inputmode="numeric">
                         <button id="btnGenerate" onclick="fetchAndGenerate()"
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl text-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-indigo-600/20">
-                            <span id="btnText">Generar Credencial</span>
-                            <div id="btnLoader"
-                                class="hidden w-6 h-6 border-[3px] border-white border-t-transparent rounded-full loader-spinner">
-                            </div>
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl text-base font-bold transition-all active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-indigo-600/20">
+                            <span id="btnText">Buscar y Generar Credencial</span>
+                            <div id="btnLoader" class="hidden w-5 h-5 border-[3px] border-white border-t-transparent rounded-full loader-spinner"></div>
                         </button>
                     </div>
                 </div>
@@ -388,17 +497,17 @@
                     <div id="idCard" class="card-container flex flex-col items-center">
                         <div class="card-accent"></div>
                         <div class="logo-container">
-                            <img id="cardLogo" src="credencial.png" alt="Logo" class="h-26 w-auto object-contain">
+                            <img id="cardLogo" src="credencial.png" alt="Logo" class="h-24 w-auto object-contain">
                         </div>
-                        <div class="mt-8 text-center px-8 w-full flex-grow flex flex-col justify-center">
-                            <p class="text-xs uppercase tracking-[0.2em] font-bold text-slate-400 mb-1">Beneficiaria</p>
-                            <h2 id="cardName" class="text-[22px] font-black text-slate-800 leading-tight mb-3">NOMBRE APELLIDO</h2>
+                        <div class="mt-6 text-center px-6 w-full flex-grow flex flex-col justify-center">
+                            <p class="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400 mb-1">Beneficiaria</p>
+                            <h2 id="cardName" class="text-xl font-black text-slate-800 leading-tight mb-3">NOMBRE APELLIDO</h2>
                             <div class="space-y-2">
                                 <div class="flex flex-col items-center">
                                     <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">DNI</p>
                                     <p id="cardDni" class="text-xl font-bold text-slate-700">00.000.000</p>
                                 </div>
-                                <div class="py-2 border-t border-slate-100 mt-4">
+                                <div class="py-2 border-t border-slate-100 mt-3">
                                     <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
                                         Participante Activa <span id="cardVencimiento" class="text-slate-500 font-normal normal-case ml-1"></span>
                                     </p>
@@ -407,17 +516,15 @@
                             </div>
                         </div>
                         <div class="pb-6">
-                            <img id="muniLogo" src="logo-solo.jpg" alt="Logo Municipio" class="h-[38px] w-auto opacity-70">
+                            <img id="muniLogo" src="logo-solo.jpg" alt="Logo Municipio" class="h-8 w-auto opacity-70">
                         </div>
                     </div>
                 </div>
 
                 <button id="btnDownload" onclick="downloadPDF()"
-                    class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl text-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl text-base font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
                     Descargar Credencial (PDF)
                 </button>
@@ -550,7 +657,6 @@
                                     vencimientoFormat: vencimientoStr,
                                     createdAt: new Date().toISOString()
                                 });
-                                // Refrescar Stats
                                 if (window.loadStats) window.loadStats();
                             }
                         }
@@ -559,7 +665,7 @@
             } catch (error) {
                 console.error(error); alert('Error de conexión.');
             } finally {
-                btnText.textContent = 'Generar Credencial';
+                btnText.textContent = 'Buscar y Generar Credencial';
                 btnLoader.classList.add('hidden');
             }
         }
@@ -582,47 +688,112 @@
         window.downloadPDF = downloadPDF;
         window.allCredenciales = [];
         window.allComercios = [];
+        window.allVisitas = [];
+        let motivosChartInstance = null;
 
-        // --- FILTERS LOGIC ---
+        // --- FILTROS Y RENDER DE VISITAS ---
+        function renderVisitas() {
+            const search = document.getElementById('search-visitas').value.toLowerCase().trim();
+            const resultadoFilter = document.getElementById('filter-visita-resultado').value;
+            const comercioFilter = document.getElementById('filter-visita-comercio').value;
+            const tbVisitas = document.getElementById('table-visitas');
+            tbVisitas.innerHTML = '';
+
+            let filtered = window.allVisitas.filter(v => {
+                const searchTarget = `${v.dni} ${v.nombre} ${v.comercio_nombre} ${v.comercio_direccion}`.toLowerCase();
+                if (search && !searchTarget.includes(search)) return false;
+
+                if (resultadoFilter === 'si' && !v.compro) return false;
+                if (resultadoFilter === 'no' && v.compro) return false;
+
+                if (comercioFilter !== 'todos' && v.comercio_id !== comercioFilter) return false;
+
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbVisitas.innerHTML = '<tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">No se encontraron registros de visitas con esos filtros.</td></tr>';
+                return;
+            }
+
+            filtered.forEach(v => {
+                const dateStr = v.fechaFormatted || 'Reciente';
+                const statusBadge = v.compro
+                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Sí, compró</span>`
+                    : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black bg-rose-50 text-rose-700 border border-rose-200 uppercase"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> No compró</span>`;
+
+                let motivoHtml = '<span class="text-slate-400 italic">-</span>';
+                if (!v.compro && v.motivo_no_compra) {
+                    motivoHtml = `<span class="font-bold text-rose-600">${v.motivo_no_compra}</span>`;
+                    if (v.motivo_detalle) {
+                        motivoHtml += `<p class="text-[11px] text-slate-500 mt-0.5">"${v.motivo_detalle}"</p>`;
+                    }
+                }
+
+                const row = `
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="px-5 py-3.5 whitespace-nowrap text-slate-500 font-medium">${dateStr}</td>
+                        <td class="px-5 py-3.5">
+                            <p class="font-bold text-slate-800">${v.nombre || 'No indica'}</p>
+                            <p class="text-[11px] text-slate-400 font-mono">DNI: ${v.dni}</p>
+                        </td>
+                        <td class="px-5 py-3.5 font-bold text-slate-800">${v.comercio_nombre || 'Desconocido'}</td>
+                        <td class="px-5 py-3.5 text-slate-500 font-medium">${v.comercio_direccion || 'Sin dirección'}</td>
+                        <td class="px-5 py-3.5 whitespace-nowrap">${statusBadge}</td>
+                        <td class="px-5 py-3.5">${motivoHtml}</td>
+                    </tr>
+                `;
+                tbVisitas.innerHTML += row;
+            });
+        }
+
+        // --- FILTROS Y RENDER DE COMERCIOS (CON DIRECCIÓN) ---
         function renderComercios() {
-            const searchTerm = document.getElementById('search-comercios').value.toLowerCase();
+            const searchTerm = document.getElementById('search-comercios').value.toLowerCase().trim();
             const tbComercios = document.getElementById('table-lista-comercios');
             tbComercios.innerHTML = '';
             let count = 0;
 
             window.allComercios.forEach(com => {
-                const name = (com.nombre_comercio || com.username).toLowerCase();
-                if (searchTerm && !name.includes(searchTerm)) return;
+                const targetText = `${com.nombre_comercio || ''} ${com.username || ''} ${com.direccion || ''}`.toLowerCase();
+                if (searchTerm && !targetText.includes(searchTerm)) return;
 
                 const isInactivo = com.inactivo === true;
                 const estadoBtn = isInactivo
-                    ? `<button onclick="window.toggleComercio('${com.uid}', true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-colors bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 border border-slate-200 hover:border-emerald-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Desactivado</button>`
-                    : `<button onclick="window.toggleComercio('${com.uid}', false)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-colors bg-emerald-50 text-emerald-600 hover:bg-rose-50 hover:text-rose-600 border border-emerald-100 hover:border-rose-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Activo</button>`;
+                    ? `<button onclick="window.toggleComercio('${com.uid}', true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase transition-colors bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 border border-slate-200 hover:border-emerald-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Desactivado</button>`
+                    : `<button onclick="window.toggleComercio('${com.uid}', false)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase transition-colors bg-emerald-50 text-emerald-600 hover:bg-rose-50 hover:text-rose-600 border border-emerald-100 hover:border-rose-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Activo</button>`;
+
+                const dirDisplay = com.direccion
+                    ? `<span class="font-medium text-slate-700 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>${com.direccion}</span>`
+                    : `<span class="text-slate-400 italic">No especificada</span>`;
 
                 const row = `
-                    <tr class="hover:bg-slate-50 transition-colors ${isInactivo ? 'opacity-60' : ''}">
-                        <td class="px-6 py-4">${com.dateAlta}</td>
-                        <td class="px-6 py-4 font-bold text-slate-700">${com.nombre_comercio || com.username}</td>
-                        <td class="px-6 py-4">
+                    <tr class="hover:bg-slate-50/80 transition-colors ${isInactivo ? 'opacity-60' : ''}">
+                        <td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">${com.dateAlta}</td>
+                        <td class="px-5 py-3.5 font-bold text-slate-800">${com.nombre_comercio || com.username}</td>
+                        <td class="px-5 py-3.5">${dirDisplay}</td>
+                        <td class="px-5 py-3.5">
                             <div class="flex items-center gap-2">
-                                <span class="font-black text-indigo-600 text-base">${com.cCount}</span>
-                                <span class="text-[11px] font-bold text-slate-400 tracking-wide mt-0.5">
-                                    <span class="text-emerald-500">(${com.cApto} Apto)</span> 
-                                    <span class="text-rose-400">(${com.cNoApto} Rechazado)</span>
+                                <span class="font-black text-indigo-600 text-sm">${com.cCount}</span>
+                                <span class="text-[11px] font-bold text-slate-400">
+                                    <span class="text-emerald-600">(${com.cApto} compras)</span> 
+                                    <span class="text-rose-500">(${com.cNoApto} sin compra)</span>
                                 </span>
                             </div>
                         </td>
-                        <td class="px-6 py-4">${estadoBtn}</td>
+                        <td class="px-5 py-3.5 whitespace-nowrap">${estadoBtn}</td>
                     </tr>
                 `;
                 tbComercios.innerHTML += row;
                 count++;
             });
-            if (count === 0) tbComercios.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center">No hay coincidencias.</td></tr>';
+
+            if (count === 0) tbComercios.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-slate-400">No hay coincidencias.</td></tr>';
         }
 
+        // --- FILTROS Y RENDER DE CREDENCIALES ---
         function renderCredenciales() {
-            const search = document.getElementById('search-credenciales').value.toLowerCase();
+            const search = document.getElementById('search-credenciales').value.toLowerCase().trim();
             const estado = document.getElementById('filter-estado').value;
             const sort = document.getElementById('sort-credenciales').value;
             const tbCred = document.getElementById('table-credenciales');
@@ -640,11 +811,8 @@
 
             filtered.sort((a, b) => {
                 if (sort === 'alta_desc') return new Date(b.createdAt) - new Date(a.createdAt);
-
-                // Tratar invalid dates enviándolos al final para ordenamiento
                 const dateA = a.vencimientoAsDate ? new Date(a.vencimientoAsDate).getTime() : 0;
                 const dateB = b.vencimientoAsDate ? new Date(b.vencimientoAsDate).getTime() : 0;
-
                 if (sort === 'vencimiento_asc') return dateA - dateB;
                 if (sort === 'vencimiento_desc') return dateB - dateA;
                 return 0;
@@ -653,14 +821,14 @@
             filtered.forEach(cred => {
                 const row = `
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4">${new Date(cred.createdAt).toLocaleDateString()}</td>
-                        <td class="px-6 py-4 font-bold text-slate-700">${cred.dni}</td>
-                        <td class="px-6 py-4">${cred.nombre}</td>
-                        <td class="px-6 py-4">${cred.vencimientoFormat || 'No indica'}</td>
-                        <td class="px-6 py-4">${cred.estadoStr}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-5 py-3.5 text-slate-500">${new Date(cred.createdAt).toLocaleDateString()}</td>
+                        <td class="px-5 py-3.5 font-bold text-slate-700 font-mono">${cred.dni}</td>
+                        <td class="px-5 py-3.5 font-bold text-slate-800">${cred.nombre}</td>
+                        <td class="px-5 py-3.5 text-slate-600">${cred.vencimientoFormat || 'No indica'}</td>
+                        <td class="px-5 py-3.5">${cred.estadoStr}</td>
+                        <td class="px-5 py-3.5">
                             <button onclick="window.eliminarCredencial('${cred.dni}')" class="text-rose-500 hover:text-rose-700 transition-colors p-1.5 rounded-lg hover:bg-rose-50 flex items-center justify-center" title="Eliminar Credencial">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
                             </button>
@@ -670,10 +838,14 @@
                 tbCred.innerHTML += row;
             });
 
-            if (filtered.length === 0) tbCred.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center">No hay coincidencias.</td></tr>';
+            if (filtered.length === 0) tbCred.innerHTML = '<tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">No hay coincidencias.</td></tr>';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('search-visitas').addEventListener('input', renderVisitas);
+            document.getElementById('filter-visita-resultado').addEventListener('change', renderVisitas);
+            document.getElementById('filter-visita-comercio').addEventListener('change', renderVisitas);
+
             document.getElementById('search-comercios').addEventListener('input', renderComercios);
             document.getElementById('search-credenciales').addEventListener('input', renderCredenciales);
             document.getElementById('filter-estado').addEventListener('change', renderCredenciales);
@@ -708,19 +880,20 @@
         window.setDoc = setDoc;
         window.deleteDoc = deleteDoc;
 
-        // Registro de Comercios
+        // Registro de Comercios (CON DIRECCIÓN)
         const formComercio = document.getElementById('formComercio');
         formComercio.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('regBtn');
             const msg = document.getElementById('regMessage');
 
-            const nombre = document.getElementById('regNombre').value;
+            const nombre = document.getElementById('regNombre').value.trim();
+            const direccion = document.getElementById('regDireccion').value.trim();
             const user = document.getElementById('regUser').value.trim().toLowerCase();
             const pass = document.getElementById('regPass').value;
 
             btn.disabled = true;
-            btn.textContent = "Creando...";
+            btn.textContent = "Registrando comercio...";
             msg.classList.add('hidden');
 
             try {
@@ -730,40 +903,41 @@
 
                 await setDoc(doc(db, "comercios", uid), {
                     nombre_comercio: nombre,
+                    direccion: direccion,
                     username: user,
                     email: email,
                     createdAt: new Date().toISOString()
                 });
 
-                // Evitar que el admin quede logueado como el comercio
+                // Evitar que el admin quede deslogueado por la sesión del nuevo usuario
                 await signOut(auth);
 
-                msg.textContent = "Comercio registrado con éxito.";
-                msg.className = "text-sm font-bold text-center p-3 rounded-lg bg-emerald-50 text-emerald-600 block";
+                msg.textContent = "Comercio registrado con éxito con su dirección de mapeo.";
+                msg.className = "text-xs font-bold text-center p-3 rounded-xl bg-emerald-50 text-emerald-600 block border border-emerald-200";
                 formComercio.reset();
-                loadStats(); // Refrescar stats
+                loadStats(); // Refrescar estadísticas
             } catch (error) {
                 console.error(error);
-                msg.textContent = "Error: " + error.message;
-                msg.className = "text-sm font-bold text-center p-3 rounded-lg bg-rose-50 text-rose-600 block";
+                msg.textContent = "Error al crear: " + error.message;
+                msg.className = "text-xs font-bold text-center p-3 rounded-xl bg-rose-50 text-rose-600 block border border-rose-200";
             } finally {
                 btn.disabled = false;
-                btn.textContent = "Crear Comercio";
+                btn.textContent = "Dar de Alta Comercio";
             }
         });
 
         // Dashboard Stats
         async function loadStats() {
             try {
-                // Credenciales
+                // 1. Credenciales
                 const credSnap = await getDocs(collection(db, "credenciales"));
                 window.allCredenciales = [];
                 let activas = 0;
                 let inactivas = 0;
                 const hoy = new Date();
 
-                credSnap.forEach(doc => {
-                    const cred = doc.data();
+                credSnap.forEach(docSnap => {
+                    const cred = docSnap.data();
                     let estadoStr = "Indeterminado";
                     let isActiva = true;
 
@@ -771,15 +945,15 @@
                         const vDate = new Date(cred.vencimientoAsDate);
                         if (vDate > hoy) {
                             activas++;
-                            estadoStr = `<span class="bg-emerald-100 text-emerald-600 px-2 py-1 rounded-md text-xs font-bold uppercase">Activa</span>`;
+                            estadoStr = `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">Activa</span>`;
                         } else {
                             inactivas++;
                             isActiva = false;
-                            estadoStr = `<span class="bg-rose-100 text-rose-600 px-2 py-1 rounded-md text-xs font-bold uppercase">Inactiva</span>`;
+                            estadoStr = `<span class="bg-rose-50 text-rose-600 border border-rose-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">Inactiva</span>`;
                         }
                     } else {
                         activas++;
-                        estadoStr = `<span class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded-md text-xs font-bold uppercase">Activa (sin FPP)</span>`;
+                        estadoStr = `<span class="bg-indigo-50 text-indigo-600 border border-indigo-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">Activa</span>`;
                     }
 
                     cred.isActiva = isActiva;
@@ -791,113 +965,280 @@
                 document.getElementById('stat-activas').textContent = activas;
                 document.getElementById('stat-inactivas').textContent = inactivas;
 
-                // Llamar al redibujo de la tabla de credenciales
                 if (window.renderCredenciales) window.renderCredenciales();
 
-                // Comercios
+                // 2. Comercios
                 const comSnap = await getDocs(collection(db, "comercios"));
-                document.getElementById('stat-comercios-total').textContent = comSnap.size;
+                const comercioFilterSelect = document.getElementById('filter-visita-comercio');
+                comerciosMap = {};
 
-                // Consultas
-                const conQ = query(collection(db, "consultas"), orderBy("timestamp", "desc"));
-                const conSnap = await getDocs(conQ);
-                document.getElementById('stat-consultas').textContent = conSnap.size;
+                // Limpiar selector de comercios para filtro
+                comercioFilterSelect.innerHTML = '<option value="todos">Todos los comercios</option>';
 
-                // Procesar Consultas y Contar por Comercio
-                const tbCon = document.getElementById('table-consultas');
-                tbCon.innerHTML = '';
-
-                const queriesByUid = {};
-                let limit = 0;
-
-                conSnap.forEach(doc => {
-                    const data = doc.data();
-                    const uid = data.comercio_uid;
-                    if (uid) {
-                        if (!queriesByUid[uid]) queriesByUid[uid] = { total: 0, apto: 0, noApto: 0 };
-                        queriesByUid[uid].total++;
-                        if (data.es_apto) queriesByUid[uid].apto++;
-                        else queriesByUid[uid].noApto++;
-                    }
-
-                    if (limit < 20) {
-                        const dateStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : 'Reciente';
-                        const resStr = data.es_apto
-                            ? `<span class="text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded-md text-[11px] border border-emerald-100 uppercase">(Apto)</span>`
-                            : `<span class="text-rose-600 font-bold bg-rose-50 px-2 py-1 rounded-md text-[11px] border border-rose-100 uppercase">(Rechazado)</span>`;
-
-                        const row = `
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="px-6 py-4 text-xs whitespace-nowrap">${dateStr}</td>
-                                <td class="px-6 py-4 font-semibold text-slate-700">${data.comercio_email ? data.comercio_email.split('@')[0] : 'Desconocido'}</td>
-                                <td class="px-6 py-4 text-slate-700 font-medium">${data.dni_consultado}</td>
-                                <td class="px-6 py-4">${resStr}</td>
-                            </tr>
-                        `;
-                        tbCon.innerHTML += row;
-                        limit++;
-                    }
-                });
-
-                if (conSnap.size === 0) {
-                    tbCon.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center">No hay consultas registradas.</td></tr>';
+                // 3. Visitas y Operaciones en Comercios
+                let visitasDocs = [];
+                try {
+                    const visSnap = await getDocs(collection(db, "visitas"));
+                    visSnap.forEach(d => {
+                        const vData = d.data();
+                        vData.id = d.id;
+                        visitasDocs.push(vData);
+                    });
+                } catch (visErr) {
+                    console.warn("No se pudieron cargar visitas, intentando consultas:", visErr);
                 }
 
-                // Generar Caché de Comercios
+                // Si no hay visitas registradas aún, cargar historial de consultas legacy para no dejar la pantalla en 0
+                if (visitasDocs.length === 0) {
+                    try {
+                        const conSnap = await getDocs(collection(db, "consultas"));
+                        conSnap.forEach(d => {
+                            const c = d.data();
+                            visitasDocs.push({
+                                id: d.id,
+                                dni: c.dni_consultado,
+                                nombre: "Consulta Comercio",
+                                comercio_id: c.comercio_uid,
+                                comercio_nombre: c.comercio_email ? c.comercio_email.split('@')[0] : 'Comercio',
+                                comercio_direccion: '',
+                                compro: c.es_apto,
+                                motivo_no_compra: c.es_apto ? null : (c.mensaje_result || 'No apto para descuento'),
+                                timestamp: c.timestamp,
+                                fechaStr: c.timestamp ? new Date(c.timestamp.toDate()).toISOString() : null
+                            });
+                        });
+                    } catch(e) {}
+                }
+
+                // Ordenar visitas más recientes primero
+                visitasDocs.sort((a, b) => {
+                    const tA = a.timestamp ? (a.timestamp.toDate ? a.timestamp.toDate().getTime() : new Date(a.fechaStr || 0).getTime()) : new Date(a.fechaStr || 0).getTime();
+                    const tB = b.timestamp ? (b.timestamp.toDate ? b.timestamp.toDate().getTime() : new Date(b.fechaStr || 0).getTime()) : new Date(b.fechaStr || 0).getTime();
+                    return tB - tA;
+                });
+
+                // Procesar Estadísticas de Visitas
+                let totalVisitas = visitasDocs.length;
+                let totalComprasSi = 0;
+                let totalComprasNo = 0;
+                const statsByComercio = {};
+                const motivosCount = {};
+
+                window.allVisitas = visitasDocs.map(v => {
+                    if (v.compro) totalComprasSi++;
+                    else {
+                        totalComprasNo++;
+                        const mot = v.motivo_no_compra || 'Sin motivo especificado';
+                        motivosCount[mot] = (motivosCount[mot] || 0) + 1;
+                    }
+
+                    // Contador por comercio
+                    const cId = v.comercio_id || 'otro';
+                    if (!statsByComercio[cId]) statsByComercio[cId] = { total: 0, si: 0, no: 0, nombre: v.comercio_nombre };
+                    statsByComercio[cId].total++;
+                    if (v.compro) statsByComercio[cId].si++;
+                    else statsByComercio[cId].no++;
+
+                    // Formateo de fecha
+                    let fechaFormatted = 'Reciente';
+                    if (v.timestamp && v.timestamp.toDate) {
+                        fechaFormatted = v.timestamp.toDate().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                    } else if (v.fechaStr) {
+                        fechaFormatted = new Date(v.fechaStr).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                    }
+
+                    return {
+                        ...v,
+                        fechaFormatted
+                    };
+                });
+
+                // Actualizar tarjetas de KPI
+                document.getElementById('stat-visitas-total').textContent = totalVisitas;
+                document.getElementById('stat-compras-si').textContent = totalComprasSi;
+                document.getElementById('stat-compras-no').textContent = totalComprasNo;
+
+                const conversionPct = totalVisitas > 0 ? Math.round((totalComprasSi / totalVisitas) * 100) : 0;
+                document.getElementById('stat-conversion-badge').textContent = `${conversionPct}% de efectividad de compras`;
+
+                // Renderizar tabla de visitas
+                if (window.renderVisitas) window.renderVisitas();
+
+                // Procesar Comercios
                 window.allComercios = [];
                 let cActivos = 0;
                 let cInactivos = 0;
 
-                comSnap.forEach(doc => {
-                    const com = doc.data();
-                    com.uid = doc.id;
-                    const stats = queriesByUid[com.uid] || { total: 0, apto: 0, noApto: 0 };
+                comSnap.forEach(docSnap => {
+                    const com = docSnap.data();
+                    com.uid = docSnap.id;
+                    const stats = statsByComercio[com.uid] || { total: 0, si: 0, no: 0 };
                     com.cCount = stats.total;
-                    com.cApto = stats.apto;
-                    com.cNoApto = stats.noApto;
+                    com.cApto = stats.si;
+                    com.cNoApto = stats.no;
                     com.dateAlta = com.createdAt ? new Date(com.createdAt).toLocaleDateString() : 'Desconocido';
 
                     if (com.inactivo === true) cInactivos++;
-                    else cActivos++;
+                    else {
+                        cActivos++;
+                        // Añadir al filtro de comercios
+                        const opt = document.createElement('option');
+                        opt.value = com.uid;
+                        opt.textContent = com.nombre_comercio || com.username;
+                        comercioFilterSelect.appendChild(opt);
+                    }
 
                     window.allComercios.push(com);
                 });
 
+                document.getElementById('stat-comercios-total').textContent = comSnap.size;
                 document.getElementById('stat-comercios-activos').textContent = cActivos;
                 document.getElementById('stat-comercios-inactivos').textContent = cInactivos;
 
-                // Llamar al redibujo de la tabla de comercios
                 if (window.renderComercios) window.renderComercios();
 
+                // 4. Renderizar Gráfico de Motivos con Chart.js
+                renderMotivosChart(motivosCount, totalComprasNo);
+
+                // 5. Renderizar Top Comercios
+                renderTopComercios(statsByComercio);
+
             } catch (e) {
-                console.error("Error loading stats", e);
+                console.error("Error al cargar estadísticas:", e);
             }
         }
 
-        // Expose loadStats so that fetchAndGenerate can call it remotely
+        // Renderizado del Gráfico de Dona de Motivos
+        function renderMotivosChart(motivosCount, totalNo) {
+            const ctx = document.getElementById('chartMotivos');
+            const listEl = document.getElementById('resumenMotivosList');
+            if (!ctx) return;
+
+            const labels = Object.keys(motivosCount);
+            const data = Object.values(motivosCount);
+
+            if (labels.length === 0) {
+                listEl.innerHTML = '<div class="p-6 text-center text-slate-400 bg-slate-50 rounded-2xl"><p class="font-bold">¡Sin motivos de rechazo aún!</p><p class="text-xs mt-1">Aparecerán aquí cuando las beneficiarias registren visitas sin compra.</p></div>';
+                if (motivosChartInstance) motivosChartInstance.destroy();
+                return;
+            }
+
+            const backgroundColors = [
+                '#ef4444', // Red
+                '#f97316', // Orange
+                '#f59e0b', // Amber
+                '#8b5cf6', // Purple
+                '#3b82f6', // Blue
+                '#64748b'  // Slate
+            ];
+
+            if (motivosChartInstance) {
+                motivosChartInstance.destroy();
+            }
+
+            motivosChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors.slice(0, labels.length),
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '68%'
+                }
+            });
+
+            // Lista detallada de motivos con porcentaje
+            let listHtml = '';
+            labels.forEach((label, idx) => {
+                const count = data[idx];
+                const pct = totalNo > 0 ? Math.round((count / totalNo) * 100) : 0;
+                const color = backgroundColors[idx % backgroundColors.length];
+
+                listHtml += `
+                    <div class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors border border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${color}"></span>
+                            <span class="font-bold text-slate-700 leading-tight">${label}</span>
+                        </div>
+                        <div class="text-right shrink-0 font-mono">
+                            <span class="font-black text-slate-800">${count}</span>
+                            <span class="text-slate-400 text-[10px]">(${pct}%)</span>
+                        </div>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = listHtml;
+        }
+
+        // Renderizado del Top Comercios
+        function renderTopComercios(statsByComercio) {
+            const listEl = document.getElementById('topComerciosList');
+            if (!listEl) return;
+
+            const items = Object.values(statsByComercio);
+            items.sort((a, b) => b.total - a.total);
+
+            if (items.length === 0) {
+                listEl.innerHTML = '<p class="text-slate-400 text-center py-4">No hay visitas registradas aún.</p>';
+                return;
+            }
+
+            let html = '';
+            items.slice(0, 5).forEach((item, index) => {
+                const pct = item.total > 0 ? Math.round((item.si / item.total) * 100) : 0;
+                html += `
+                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-black text-[10px] flex items-center justify-center shrink-0">
+                                ${index + 1}
+                            </span>
+                            <div>
+                                <p class="font-bold text-slate-800 leading-tight">${item.nombre || 'Comercio'}</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">${item.si} compras concretadas</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-black text-indigo-600 text-sm">${item.total}</span>
+                            <p class="text-[9px] font-bold text-emerald-600">${pct}% éxito</p>
+                        </div>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        }
+
         window.loadStats = loadStats;
 
-        // Global function for toggle
+        // Toggle estado del comercio (Activo / Inactivo)
         window.toggleComercio = async (uid, isCurrentlyInactive) => {
             try {
                 await updateDoc(doc(db, "comercios", uid), {
                     inactivo: !isCurrentlyInactive
                 });
-                // Recargar estadísticas para plasmar el cambio visual
                 loadStats();
             } catch (e) {
                 console.error("No se pudo cambiar el estado del comercio: ", e);
-                alert("Error al actualizar estado. " + e.message);
+                alert("Error al actualizar estado: " + e.message);
             }
         };
 
-        // Global function to delete a credential
+        // Eliminar credencial de Firestore
         window.eliminarCredencial = async (dni) => {
             if (confirm(`¿Estás seguro de que deseas eliminar la credencial con DNI ${dni}?`)) {
                 try {
                     await deleteDoc(doc(db, "credenciales", dni.toString()));
                     alert("Credencial eliminada exitosamente.");
-                    loadStats(); // Refresh stats and re-render table
+                    loadStats();
                 } catch (error) {
                     console.error("Error al eliminar credencial:", error);
                     alert("No se pudo eliminar la credencial: " + error.message);
@@ -905,7 +1246,7 @@
             }
         };
 
-        // Initialize
+        // Inicializar carga de datos
         loadStats();
     </script>
 </body>
