@@ -449,6 +449,11 @@
             const nombre = (data.nombre || '').trim();
             const dni = (data.dni || fallbackDni || '').trim();
 
+            // Registrar evento de consulta de DNI (inicialmente solo consulta DNI)
+            if (window.guardarConsultaDni) {
+                window.guardarConsultaDni(dni, nombre, isApto);
+            }
+
             if (isApto) {
                 currentBeneficiaria = {
                     dni: dni,
@@ -556,6 +561,7 @@
             dniInput.value = '';
             dniInput.focus();
             currentBeneficiaria = null;
+            if (window.resetConsultaActual) window.resetConsultaActual();
             resetSeccionVisita();
         }
 
@@ -705,7 +711,7 @@
     <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
@@ -719,6 +725,30 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        // Control de ID de la consulta actual para seguimiento de efectividad
+        let currentConsultaDocId = null;
+
+        window.resetConsultaActual = () => {
+            currentConsultaDocId = null;
+        };
+
+        // Registrar evento de consulta de DNI (inicialmente solo consulta)
+        window.guardarConsultaDni = async (dni, nombre, esApto) => {
+            try {
+                const docRef = await addDoc(collection(db, "consultas_dni"), {
+                    dni: dni,
+                    nombre: nombre || "",
+                    es_apto: esApto,
+                    efectiva: false, // inicialmente solo ingresó DNI
+                    timestamp: serverTimestamp(),
+                    fechaStr: new Date().toISOString()
+                });
+                currentConsultaDocId = docRef.id;
+            } catch(e) {
+                console.warn("No se pudo registrar consulta de DNI en Firestore:", e);
+            }
+        };
 
         // Cargar lista de comercios activos
         async function loadComerciosList() {
@@ -784,13 +814,31 @@
             }
         };
 
-        // Guardar visita en Firestore
+        // Guardar visita en Firestore y marcar consulta como EFECTIVA
         window.guardarVisitaEnDb = async (visitData) => {
             const payload = {
                 ...visitData,
+                consulta_id: currentConsultaDocId || null,
                 timestamp: serverTimestamp()
             };
-            return await addDoc(collection(db, "visitas"), payload);
+            const visitRef = await addDoc(collection(db, "visitas"), payload);
+
+            // Si proviene de una consulta con DNI, actualizarla a EFECTIVA (DNI + botón)
+            if (currentConsultaDocId) {
+                try {
+                    await updateDoc(doc(db, "consultas_dni", currentConsultaDocId), {
+                        efectiva: true,
+                        visita_id: visitRef.id,
+                        compro: visitData.compro,
+                        comercio_id: visitData.comercio_id,
+                        comercio_nombre: visitData.comercio_nombre
+                    });
+                } catch(e) {
+                    console.warn("No se pudo actualizar estado de consulta a efectiva:", e);
+                }
+            }
+
+            return visitRef;
         };
 
         // Inicializar carga de comercios al abrir la página

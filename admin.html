@@ -207,8 +207,8 @@
                 </button>
             </div>
 
-            <!-- 4 Tarjetas de Métricas Principales -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- 5 Tarjetas de Métricas Principales -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
                 <!-- Card 1: Alcance / Beneficiarias Padrón -->
                 <div class="stat-card">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Beneficiarias Padrón</p>
@@ -241,21 +241,39 @@
                     <p class="text-xs text-slate-500 mt-1">Activos vs Desactivados</p>
                 </div>
 
-                <!-- Card 4: Operaciones y Conversión -->
-                <div class="stat-card border-indigo-100 bg-gradient-to-br from-white to-indigo-50/30">
+                <!-- Card 4: CONSULTA EFECTIVA (DNI + Botón vs Solo DNI) -->
+                <div class="stat-card border-indigo-100 bg-gradient-to-br from-white to-indigo-50/40">
                     <div class="flex justify-between items-center">
-                        <p class="text-xs font-bold text-violet-600 uppercase tracking-wider">Visitas en Locales</p>
+                        <p class="text-xs font-bold text-indigo-700 uppercase tracking-wider">Consulta Efectiva</p>
+                        <span id="stat-efectividad-badge" class="bg-indigo-100 text-indigo-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-full border border-indigo-200">
+                            - % Efectiva
+                        </span>
+                    </div>
+                    <p class="text-3xl font-black text-slate-800 mt-2 flex items-baseline gap-1.5">
+                        <span id="stat-consultas-efectivas" class="text-indigo-600">0</span>
+                        <span class="text-xs font-bold text-slate-400">efectivas</span>
+                    </p>
+                    <p class="text-xs text-slate-500 mt-1 font-medium flex items-center justify-between">
+                        <span><b id="stat-solo-dni" class="text-slate-700 font-bold">0</b> solo DNI</span>
+                        <span class="text-[10px] text-slate-400">(Total: <span id="stat-total-consultas">0</span>)</span>
+                    </p>
+                </div>
+
+                <!-- Card 5: Visitas en Locales (Compras vs No Compras) -->
+                <div class="stat-card border-violet-100 bg-gradient-to-br from-white to-violet-50/30">
+                    <div class="flex justify-between items-center">
+                        <p class="text-xs font-bold text-violet-600 uppercase tracking-wider">Uso en Locales</p>
                         <span id="stat-visitas-total" class="text-xs font-extrabold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">0</span>
                     </div>
                     <p class="text-3xl font-black text-slate-800 mt-2 flex items-baseline gap-2">
-                        <span id="stat-compras-si" class="text-emerald-600">-</span>
+                        <span id="stat-compras-si" class="text-emerald-600">0</span>
                         <span class="text-xs font-bold text-slate-400">compró</span>
                         <span class="text-slate-300 font-light">|</span>
-                        <span id="stat-compras-no" class="text-rose-500">-</span>
-                        <span class="text-xs font-bold text-slate-400">no compró</span>
+                        <span id="stat-compras-no" class="text-rose-500">0</span>
+                        <span class="text-xs font-bold text-slate-400">no</span>
                     </p>
                     <p id="stat-conversion-badge" class="text-xs font-bold text-slate-500 mt-1">
-                        - de efectividad
+                        - efectividad de compra
                     </p>
                 </div>
             </div>
@@ -1177,13 +1195,45 @@
                     };
                 });
 
-                // Actualizar tarjetas de KPI
+                // Actualizar tarjetas de KPI de Visitas y Compras
                 document.getElementById('stat-visitas-total').textContent = totalVisitas;
                 document.getElementById('stat-compras-si').textContent = totalComprasSi;
                 document.getElementById('stat-compras-no').textContent = totalComprasNo;
 
                 const conversionPct = totalVisitas > 0 ? Math.round((totalComprasSi / totalVisitas) * 100) : 0;
                 document.getElementById('stat-conversion-badge').textContent = `${conversionPct}% de efectividad de compras`;
+
+                // Procesar Consultas DNI (Total vs Efectivas con botón)
+                let totalConsultasDni = 0;
+                let consultasEfectivas = 0;
+                let soloConsultaDni = 0;
+
+                try {
+                    const conDniSnap = await getDocs(collection(db, "consultas_dni"));
+                    totalConsultasDni = conDniSnap.size;
+                    conDniSnap.forEach(d => {
+                        const c = d.data();
+                        if (c.efectiva === true) consultasEfectivas++;
+                    });
+                } catch(e) {
+                    console.warn("Error cargando consultas_dni:", e);
+                }
+
+                // Las consultas efectivas son al menos el número de visitas registradas
+                if (consultasEfectivas < totalVisitas) {
+                    consultasEfectivas = totalVisitas;
+                }
+                if (totalConsultasDni < consultasEfectivas) {
+                    totalConsultasDni = consultasEfectivas;
+                }
+
+                soloConsultaDni = Math.max(0, totalConsultasDni - consultasEfectivas);
+                const pctEfectividad = totalConsultasDni > 0 ? Math.round((consultasEfectivas / totalConsultasDni) * 100) : 0;
+
+                document.getElementById('stat-total-consultas').textContent = totalConsultasDni;
+                document.getElementById('stat-consultas-efectivas').textContent = consultasEfectivas;
+                document.getElementById('stat-solo-dni').textContent = soloConsultaDni;
+                document.getElementById('stat-efectividad-badge').textContent = `${pctEfectividad}% Efectiva`;
 
                 // Renderizar tabla de visitas
                 if (window.renderVisitas) window.renderVisitas();
