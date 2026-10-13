@@ -341,11 +341,12 @@
                                 <th class="px-5 py-3.5 font-bold">Dirección</th>
                                 <th class="px-5 py-3.5 font-bold">¿Compró?</th>
                                 <th class="px-5 py-3.5 font-bold">Motivo (en caso negativo)</th>
+                                <th class="px-5 py-3.5 font-bold text-center">Acción</th>
                             </tr>
                         </thead>
                         <tbody id="table-visitas" class="divide-y divide-slate-100">
                             <tr>
-                                <td colspan="6" class="px-6 py-6 text-center text-slate-400">Cargando registros de visitas...</td>
+                                <td colspan="7" class="px-6 py-6 text-center text-slate-400">Cargando registros de visitas...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -809,7 +810,7 @@
             });
 
             if (filtered.length === 0) {
-                tbVisitas.innerHTML = '<tr><td colspan="6" class="px-6 py-6 text-center text-slate-400">No se encontraron registros de visitas con esos filtros.</td></tr>';
+                tbVisitas.innerHTML = '<tr><td colspan="7" class="px-6 py-6 text-center text-slate-400">No se encontraron registros de visitas con esos filtros.</td></tr>';
                 return;
             }
 
@@ -838,6 +839,13 @@
                         <td class="px-5 py-3.5 text-slate-500 font-medium">${v.comercio_direccion || 'Sin dirección'}</td>
                         <td class="px-5 py-3.5 whitespace-nowrap">${statusBadge}</td>
                         <td class="px-5 py-3.5">${motivoHtml}</td>
+                        <td class="px-5 py-3.5 text-center">
+                            <button onclick="window.eliminarVisita('${v.id}')" class="text-slate-400 hover:text-rose-600 transition-colors p-1.5 rounded-lg hover:bg-rose-50 inline-flex items-center justify-center" title="Eliminar registro de prueba">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </td>
                     </tr>
                 `;
                 tbVisitas.innerHTML += row;
@@ -1421,6 +1429,17 @@
                 } catch (error) {
                     console.error("Error al eliminar credencial:", error);
                     alert("No se pudo eliminar la credencial: " + error.message);
+                }
+            }
+        // Eliminar registro de visita
+        window.eliminarVisita = async (id) => {
+            if (confirm("¿Estás seguro de que deseas eliminar este registro de visita?")) {
+                try {
+                    await deleteDoc(doc(db, "visitas", id));
+                    loadStats();
+                } catch (e) {
+                    console.error("Error al eliminar visita:", e);
+                    alert("No se pudo eliminar el registro: " + e.message);
                 }
             }
         };
