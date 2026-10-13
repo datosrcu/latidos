@@ -1137,27 +1137,8 @@
                     console.warn("No se pudieron cargar visitas:", visErr);
                 }
 
-                // Cargar también historial de consultas legacy si existieran
-                if (visitasDocs.length === 0) {
-                    try {
-                        const conSnap = await getDocs(collection(db, "consultas"));
-                        conSnap.forEach(d => {
-                            const c = d.data();
-                            visitasDocs.push({
-                                id: d.id,
-                                dni: c.dni_consultado,
-                                nombre: "Consulta Comercio",
-                                comercio_id: c.comercio_uid,
-                                comercio_nombre: c.comercio_email ? c.comercio_email.split('@')[0] : 'Comercio',
-                                comercio_direccion: '',
-                                compro: c.es_apto,
-                                motivo_no_compra: c.es_apto ? null : (c.mensaje_result || 'No apto para descuento'),
-                                timestamp: c.timestamp,
-                                fechaStr: c.timestamp ? new Date(c.timestamp.toDate()).toISOString() : null
-                            });
-                        });
-                    } catch(e) {}
-                }
+                // Cargar únicamente registros de la nueva colección de visitas
+
 
                 // Ordenar visitas más recientes primero
                 visitasDocs.sort((a, b) => {
