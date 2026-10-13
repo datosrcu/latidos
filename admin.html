@@ -209,28 +209,22 @@
 
             <!-- 4 Tarjetas de Métricas Principales -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1: PERSONAS APTAS (Nueva tarjeta solicitada) -->
-                <div class="stat-card border-emerald-100 bg-gradient-to-br from-white to-emerald-50/30">
-                    <div class="flex justify-between items-center">
-                        <p class="text-xs font-black text-emerald-700 uppercase tracking-wider">Personas Aptas</p>
-                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border border-emerald-200">
-                            Habilitadas
-                        </span>
-                    </div>
-                    <p id="stat-activas" class="text-4xl font-black text-emerald-600 mt-2">-</p>
-                    <p class="text-xs text-slate-500 mt-1">Beneficiarias vigentes con descuento</p>
+                <!-- Card 1: Alcance / Beneficiarias Padrón -->
+                <div class="stat-card">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Beneficiarias Padrón</p>
+                    <p id="stat-alcance" class="text-4xl font-black text-slate-800 mt-2">-</p>
+                    <p class="text-xs text-slate-500 mt-1">Credenciales emitidas en sistema</p>
                 </div>
 
-                <!-- Card 2: NO APTAS / VENCIDAS -->
+                <!-- Card 2: Activas vs Inactivas -->
                 <div class="stat-card">
-                    <div class="flex justify-between items-center">
-                        <p class="text-xs font-black text-slate-400 uppercase tracking-wider">No Aptas (Vencidas)</p>
-                        <span class="bg-slate-100 text-slate-500 text-[10px] font-black uppercase px-2 py-0.5 rounded-full">
-                            Padrón: <span id="stat-alcance">-</span>
-                        </span>
-                    </div>
-                    <p id="stat-inactivas" class="text-4xl font-black text-rose-500 mt-2">-</p>
-                    <p class="text-xs text-slate-500 mt-1">Excedieron el año límite posparto</p>
+                    <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Activas vs Inactivas</p>
+                    <p class="text-4xl font-black text-slate-800 mt-2">
+                        <span id="stat-activas" class="text-emerald-500">-</span>
+                        <span class="text-slate-300 text-2xl font-light">/</span>
+                        <span id="stat-inactivas" class="text-rose-400 text-2xl font-light">-</span>
+                    </p>
+                    <p class="text-xs text-slate-500 mt-1">Según fecha límite FPP (1 año)</p>
                 </div>
 
                 <!-- Card 3: Comercios Adheridos -->
