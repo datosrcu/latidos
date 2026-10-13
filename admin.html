@@ -152,14 +152,14 @@
                 </svg>
                 Estadísticas y Visitas
             </button>
-            <button onclick="switchTab('register')" id="btn-register"
+            <button onclick="switchTab('comercios')" id="btn-comercios"
                 class="w-full flex items-center gap-3 px-4 py-3 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium text-left">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
-                Registrar Comercio
+                Comercios
             </button>
             <div class="h-px bg-slate-100 my-4"></div>
             <button onclick="switchTab('credencial')" id="btn-credencial"
@@ -192,14 +192,14 @@
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto p-8 md:p-10">
 
-        <!-- Tab: Estadísticas y Visitas -->
+        <!-- 1. TAB: ESTADÍSTICAS Y VISITAS -->
         <div id="tab-stats" class="tab-content active space-y-8 max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-3xl font-black text-slate-800 tracking-tight">Dashboard de Gestión</h1>
-                    <p class="text-slate-500 text-sm mt-1">Métricas de beneficiarias, uso de credenciales y operaciones en comercios</p>
+                    <p class="text-slate-500 text-sm mt-1">Métricas de beneficiarias aptas, comercios adheridos y auditoría de compras</p>
                 </div>
-                <button onclick="loadStats()" class="self-start md:self-auto px-4 py-2 bg-white border border-slate-200 hover:border-indigo-500 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition-all active:scale-95">
+                <button onclick="loadStats()" class="self-start md:self-auto px-4 py-2.5 bg-white border border-slate-200 hover:border-indigo-500 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-2 shadow-sm transition-all active:scale-95">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
@@ -209,29 +209,35 @@
 
             <!-- 4 Tarjetas de Métricas Principales -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1: Alcance -->
-                <div class="stat-card">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Beneficiarias Padrón</p>
-                    <p id="stat-alcance" class="text-4xl font-black text-slate-800 mt-2">-</p>
-                    <p class="text-xs text-slate-500 mt-1">Credenciales emitidas en sistema</p>
+                <!-- Card 1: PERSONAS APTAS (Nueva tarjeta solicitada) -->
+                <div class="stat-card border-emerald-100 bg-gradient-to-br from-white to-emerald-50/30">
+                    <div class="flex justify-between items-center">
+                        <p class="text-xs font-black text-emerald-700 uppercase tracking-wider">Personas Aptas</p>
+                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border border-emerald-200">
+                            Habilitadas
+                        </span>
+                    </div>
+                    <p id="stat-activas" class="text-4xl font-black text-emerald-600 mt-2">-</p>
+                    <p class="text-xs text-slate-500 mt-1">Beneficiarias vigentes con descuento</p>
                 </div>
 
-                <!-- Card 2: Activas vs Inactivas -->
+                <!-- Card 2: NO APTAS / VENCIDAS -->
                 <div class="stat-card">
-                    <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Activas vs Inactivas</p>
-                    <p class="text-4xl font-black text-slate-800 mt-2">
-                        <span id="stat-activas" class="text-emerald-500">-</span>
-                        <span class="text-slate-300 text-2xl font-light">/</span>
-                        <span id="stat-inactivas" class="text-rose-400 text-2xl font-light">-</span>
-                    </p>
-                    <p class="text-xs text-slate-500 mt-1">Según fecha límite FPP (1 año)</p>
+                    <div class="flex justify-between items-center">
+                        <p class="text-xs font-black text-slate-400 uppercase tracking-wider">No Aptas (Vencidas)</p>
+                        <span class="bg-slate-100 text-slate-500 text-[10px] font-black uppercase px-2 py-0.5 rounded-full">
+                            Padrón: <span id="stat-alcance">-</span>
+                        </span>
+                    </div>
+                    <p id="stat-inactivas" class="text-4xl font-black text-rose-500 mt-2">-</p>
+                    <p class="text-xs text-slate-500 mt-1">Excedieron el año límite posparto</p>
                 </div>
 
                 <!-- Card 3: Comercios Adheridos -->
                 <div class="stat-card">
                     <div class="flex justify-between items-center">
                         <p class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Comercios</p>
-                        <span id="stat-comercios-total" class="text-xs font-extrabold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">0</span>
+                        <span id="stat-comercios-total" class="text-xs font-extrabold bg-indigo-50 text-indigo-600 px-2.5 py-0.5 rounded-full">0</span>
                     </div>
                     <p class="text-4xl font-black text-slate-800 mt-2">
                         <span id="stat-comercios-activos" class="text-indigo-600">-</span>
@@ -290,7 +296,7 @@
                 </div>
             </div>
 
-            <!-- TABLA 1: Registro de Visitas y Operaciones en Comercios (NUEVA) -->
+            <!-- TABLA DE VISITAS Y OPERACIONES -->
             <div class="stat-card">
                 <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-4">
                     <div>
@@ -334,42 +340,12 @@
                 </div>
             </div>
 
-            <!-- TABLA 2: Comercios Adheridos (Con Dirección) -->
-            <div class="stat-card">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                    <div>
-                        <h3 class="text-lg font-black text-slate-800">Comercios Adheridos al Programa</h3>
-                        <p class="text-xs text-slate-400 mt-0.5">Listado con dirección física para mapeo y auditoría de uso</p>
-                    </div>
-                    <input type="text" id="search-comercios" placeholder="Buscar por nombre o dirección..."
-                        class="px-4 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 w-full sm:w-64">
-                </div>
-                <div class="overflow-x-auto overflow-y-auto max-h-[450px] border border-slate-100 rounded-xl">
-                    <table class="w-full text-left text-xs text-slate-600">
-                        <thead class="text-[11px] text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
-                            <tr>
-                                <th class="px-5 py-3.5 font-bold">Fecha Alta</th>
-                                <th class="px-5 py-3.5 font-bold">Nombre del Comercio</th>
-                                <th class="px-5 py-3.5 font-bold">Dirección para Mapeo</th>
-                                <th class="px-5 py-3.5 font-bold">Visitas (Compras / Sin Compra)</th>
-                                <th class="px-5 py-3.5 font-bold">Estado / Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-lista-comercios" class="divide-y divide-slate-100">
-                            <tr>
-                                <td colspan="5" class="px-6 py-6 text-center text-slate-400">Cargando datos...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TABLA 3: Credenciales Emitidas -->
+            <!-- TABLA DE CREDENCIALES / BENEFICIARIAS -->
             <div class="stat-card">
                 <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-6 gap-4">
                     <div>
-                        <h3 class="text-lg font-black text-slate-800">Registro de Credenciales Digitales</h3>
-                        <p class="text-xs text-slate-400 mt-0.5">Historial de beneficiarias que han consultado y generado credencial</p>
+                        <h3 class="text-lg font-black text-slate-800">Padrón de Beneficiarias Registradas</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Historial de personas y estado de habilitación</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2 w-full xl:w-auto">
                         <input type="text" id="search-credenciales" placeholder="Buscar por Nombre o DNI..."
@@ -377,12 +353,12 @@
                         <select id="filter-estado"
                             class="px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 bg-white">
                             <option value="todas">Todas</option>
-                            <option value="activas">Activas</option>
-                            <option value="inactivas">Inactivas</option>
+                            <option value="activas">Aptas (Activas)</option>
+                            <option value="inactivas">No Aptas (Inactivas)</option>
                         </select>
                         <select id="sort-credenciales"
                             class="px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 bg-white">
-                            <option value="alta_desc">Más recientes (Alta)</option>
+                            <option value="alta_desc">Más recientes</option>
                             <option value="vencimiento_asc">Vencimiento próximo</option>
                             <option value="vencimiento_desc">Vencimiento lejano</option>
                         </select>
@@ -392,7 +368,7 @@
                     <table class="w-full text-left text-xs text-slate-600">
                         <thead class="text-[11px] text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
                             <tr>
-                                <th class="px-5 py-3.5 font-bold">Fecha Creación</th>
+                                <th class="px-5 py-3.5 font-bold">Fecha Alta</th>
                                 <th class="px-5 py-3.5 font-bold">DNI</th>
                                 <th class="px-5 py-3.5 font-bold">Nombre Completo</th>
                                 <th class="px-5 py-3.5 font-bold">Vencimiento</th>
@@ -411,65 +387,65 @@
 
         </div>
 
-        <!-- Tab: Registrar Comercio (CON DIRECCIÓN) -->
-        <div id="tab-register" class="tab-content max-w-lg mx-auto mt-8">
-            <div class="bg-white p-8 md:p-10 rounded-[32px] shadow-2xl border border-slate-100">
-                <div class="text-center mb-8">
-                    <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
+        <!-- 2. TAB: COMERCIOS (GESTIÓN COMPLETA Y ALTA SIN LOGIN) -->
+        <div id="tab-comercios" class="tab-content space-y-6 max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-black text-slate-800 tracking-tight">Comercios Adheridos</h1>
+                    <p class="text-slate-500 text-sm mt-1">
+                        Administre los negocios del programa, agregue o edite su dirección para el mapa y active o desactive locales.
+                    </p>
+                </div>
+                <button onclick="abrirModalNuevoComercio()"
+                    class="self-start sm:self-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-3 rounded-2xl text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/25 active:scale-95 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Nuevo Comercio</span>
+                </button>
+            </div>
+
+            <!-- Barra de Búsqueda y Filtro -->
+            <div class="stat-card">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <div class="w-full sm:w-80">
+                        <input type="text" id="search-comercios" placeholder="Buscar por nombre o dirección..."
+                            class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500">
                     </div>
-                    <h2 class="text-2xl font-black text-slate-800">Registrar Comercio Adherido</h2>
-                    <p class="text-slate-500 text-xs mt-1">Cargue los datos del comercio para que figure en la credencial y pueda ser mapeado</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400 font-semibold">Estado:</span>
+                        <select id="filter-comercio-estado" onchange="renderComercios()"
+                            class="px-3 py-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-indigo-500 bg-white font-medium text-slate-600">
+                            <option value="todos">Todos</option>
+                            <option value="activos">Solo Activos</option>
+                            <option value="inactivos">Solo Inactivos</option>
+                            <option value="sin_direccion">⚠️ Sin Dirección Cargada</option>
+                        </select>
+                    </div>
                 </div>
 
-                <form id="formComercio" class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                            Nombre del Comercio <span class="text-rose-500">*</span>
-                        </label>
-                        <input type="text" id="regNombre" required placeholder="Ej: Pañalera Los Peques"
-                            class="w-full text-base py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                            Dirección del Comercio (Calle y N° / Barrio) <span class="text-rose-500">*</span>
-                        </label>
-                        <input type="text" id="regDireccion" required placeholder="Ej: Av. San Martín 1234, Centro"
-                            class="w-full text-base py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
-                        <p class="text-[11px] text-slate-400 mt-1">Dato esencial para la georreferenciación y el mapeo en el sistema.</p>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                            Identificador / Usuario de Sistema <span class="text-rose-500">*</span>
-                        </label>
-                        <input type="text" id="regUser" required placeholder="ej: panalerapeques"
-                            class="w-full text-base py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
-                        <p class="text-[11px] text-slate-400 mt-1">Solo letras o números sin espacios ni acentos.</p>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                            Contraseña de Seguridad <span class="text-rose-500">*</span>
-                        </label>
-                        <input type="password" id="regPass" required placeholder="••••••••"
-                            class="w-full text-base py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
-                    </div>
-
-                    <div id="regMessage" class="hidden text-xs font-bold text-center p-3 rounded-xl"></div>
-
-                    <button type="submit" id="regBtn"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl text-base font-bold transition-all active:scale-95 shadow-lg shadow-indigo-600/20">
-                        Dar de Alta Comercio
-                    </button>
-                </form>
+                <div class="overflow-x-auto overflow-y-auto max-h-[600px] border border-slate-100 rounded-xl">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="text-[11px] text-slate-400 uppercase tracking-wider bg-slate-50 border-b border-slate-100 sticky top-0 z-10">
+                            <tr>
+                                <th class="px-5 py-3.5 font-bold">Comercio</th>
+                                <th class="px-5 py-3.5 font-bold">Dirección para Mapeo</th>
+                                <th class="px-5 py-3.5 font-bold">Visitas Totales</th>
+                                <th class="px-5 py-3.5 font-bold text-center">Estado (Píldora)</th>
+                                <th class="px-5 py-3.5 font-bold text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-lista-comercios" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="5" class="px-6 py-6 text-center text-slate-400">Cargando comercios...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- Tab: Credencial (Generador Manual PDF) -->
+        <!-- 3. TAB: CREDENCIAL (EMISIÓN MANUAL PDF) -->
         <div id="tab-credencial" class="tab-content max-w-md mx-auto mt-8 pb-12">
             <header class="w-full text-center mb-8">
                 <h1 class="text-2xl font-black text-slate-800 tracking-tight">Emisión Manual de Credencial</h1>
@@ -533,10 +509,96 @@
 
     </main>
 
+    <!-- MODAL 1: NUEVO COMERCIO (SIN USUARIO NI CONTRASEÑA) -->
+    <div id="modalNuevoComercio" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-xl font-black text-slate-800">Nuevo Comercio</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Agregue un local para que las madres puedan seleccionarlo</p>
+                </div>
+                <button onclick="cerrarModalNuevoComercio()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="formNuevoComercio" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nombre del Comercio *</label>
+                    <input type="text" id="nuevoNombre" required placeholder="Ej: Pañalera Mi Bebé"
+                        class="w-full text-sm py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Dirección del Comercio *</label>
+                    <input type="text" id="nuevaDireccion" required placeholder="Ej: Av. San Martín 1234, Centro"
+                        class="w-full text-sm py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                    <p class="text-[11px] text-slate-400 mt-1">Para mapeo y visualización de la beneficiaria.</p>
+                </div>
+
+                <div class="flex gap-2 pt-4">
+                    <button type="button" onclick="cerrarModalNuevoComercio()"
+                        class="w-1/3 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="btnGuardarNuevoComercio"
+                        class="w-2/3 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-indigo-600/20 active:scale-95 transition-all">
+                        Guardar Comercio
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EDITAR COMERCIO (NOMBRE Y DIRECCIÓN) -->
+    <div id="modalEditarComercio" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-xl font-black text-slate-800">Editar Comercio</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Modifique el nombre o cargue la dirección física</p>
+                </div>
+                <button onclick="cerrarModalEditarComercio()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="formEditarComercio" class="space-y-4">
+                <input type="hidden" id="editComercioId">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nombre del Comercio *</label>
+                    <input type="text" id="editNombre" required
+                        class="w-full text-sm py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Dirección del Comercio *</label>
+                    <input type="text" id="editDireccion" required placeholder="Ej: San Martín 560"
+                        class="w-full text-sm py-3 px-4 rounded-xl border-2 border-slate-100 outline-none focus:border-indigo-500 text-slate-700">
+                    <p class="text-[11px] text-slate-400 mt-1">Dato necesario para georreferenciación en el mapa.</p>
+                </div>
+
+                <div class="flex gap-2 pt-4">
+                    <button type="button" onclick="cerrarModalEditarComercio()"
+                        class="w-1/3 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="btnGuardarEdicionComercio"
+                        class="w-2/3 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-emerald-600/20 active:scale-95 transition-all">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${tabId}`).classList.add('active');
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.add('active');
 
             document.querySelectorAll('aside nav button').forEach(el => {
                 el.classList.remove('bg-indigo-50', 'text-indigo-700', 'font-semibold');
@@ -691,6 +753,29 @@
         window.allVisitas = [];
         let motivosChartInstance = null;
 
+        // MODALES
+        window.abrirModalNuevoComercio = () => {
+            document.getElementById('formNuevoComercio').reset();
+            document.getElementById('modalNuevoComercio').classList.remove('hidden');
+            document.getElementById('nuevoNombre').focus();
+        };
+
+        window.cerrarModalNuevoComercio = () => {
+            document.getElementById('modalNuevoComercio').classList.add('hidden');
+        };
+
+        window.abrirModalEditarComercio = (id, nombre, direccion) => {
+            document.getElementById('editComercioId').value = id;
+            document.getElementById('editNombre').value = nombre;
+            document.getElementById('editDireccion').value = direccion || '';
+            document.getElementById('modalEditarComercio').classList.remove('hidden');
+            document.getElementById('editDireccion').focus();
+        };
+
+        window.cerrarModalEditarComercio = () => {
+            document.getElementById('modalEditarComercio').classList.add('hidden');
+        };
+
         // --- FILTROS Y RENDER DE VISITAS ---
         function renderVisitas() {
             const search = document.getElementById('search-visitas').value.toLowerCase().trim();
@@ -747,9 +832,10 @@
             });
         }
 
-        // --- FILTROS Y RENDER DE COMERCIOS (CON DIRECCIÓN) ---
+        // --- FILTROS Y RENDER DE COMERCIOS (CON PÍLDORA Y EDICIÓN) ---
         function renderComercios() {
             const searchTerm = document.getElementById('search-comercios').value.toLowerCase().trim();
+            const estadoFilter = document.getElementById('filter-comercio-estado') ? document.getElementById('filter-comercio-estado').value : 'todos';
             const tbComercios = document.getElementById('table-lista-comercios');
             tbComercios.innerHTML = '';
             let count = 0;
@@ -759,36 +845,77 @@
                 if (searchTerm && !targetText.includes(searchTerm)) return;
 
                 const isInactivo = com.inactivo === true;
-                const estadoBtn = isInactivo
-                    ? `<button onclick="window.toggleComercio('${com.uid}', true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase transition-colors bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 border border-slate-200 hover:border-emerald-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Desactivado</button>`
-                    : `<button onclick="window.toggleComercio('${com.uid}', false)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase transition-colors bg-emerald-50 text-emerald-600 hover:bg-rose-50 hover:text-rose-600 border border-emerald-100 hover:border-rose-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Activo</button>`;
+                if (estadoFilter === 'activos' && isInactivo) return;
+                if (estadoFilter === 'inactivos' && !isInactivo) return;
+                if (estadoFilter === 'sin_direccion' && com.direccion && com.direccion.trim() !== '') return;
 
-                const dirDisplay = com.direccion
-                    ? `<span class="font-medium text-slate-700 flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>${com.direccion}</span>`
-                    : `<span class="text-slate-400 italic">No especificada</span>`;
+                // Píldora interactiva para activar/desactivar
+                const pildoraEstado = isInactivo
+                    ? `<button onclick="window.toggleComercio('${com.uid}', true)" title="Haga clic para activar"
+                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase transition-all bg-slate-100 text-slate-500 hover:bg-emerald-50 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 shadow-sm">
+                         <span class="w-2 h-2 rounded-full bg-slate-400"></span> Inactivo
+                       </button>`
+                    : `<button onclick="window.toggleComercio('${com.uid}', false)" title="Haga clic para desactivar"
+                         class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase transition-all bg-emerald-50 text-emerald-700 hover:bg-rose-50 hover:text-rose-700 border border-emerald-200 hover:border-rose-300 shadow-sm">
+                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Activo
+                       </button>`;
+
+                const dirDisplay = com.direccion && com.direccion.trim() !== ''
+                    ? `<span class="font-medium text-slate-700 flex items-center gap-1.5">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-indigo-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                         </svg>
+                         ${com.direccion}
+                       </span>`
+                    : `<button onclick="window.abrirModalEditarComercio('${com.uid}', '${(com.nombre_comercio || com.username || '').replace(/'/g, "\\'")}', '')" 
+                         class="text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase flex items-center gap-1">
+                         ⚠️ Cargar dirección
+                       </button>`;
+
+                const safeNombre = (com.nombre_comercio || com.username || 'Comercio').replace(/'/g, "\\'");
+                const safeDireccion = (com.direccion || '').replace(/'/g, "\\'");
 
                 const row = `
                     <tr class="hover:bg-slate-50/80 transition-colors ${isInactivo ? 'opacity-60' : ''}">
-                        <td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">${com.dateAlta}</td>
-                        <td class="px-5 py-3.5 font-bold text-slate-800">${com.nombre_comercio || com.username}</td>
+                        <td class="px-5 py-3.5 font-bold text-slate-800">
+                            ${com.nombre_comercio || com.username}
+                        </td>
                         <td class="px-5 py-3.5">${dirDisplay}</td>
                         <td class="px-5 py-3.5">
                             <div class="flex items-center gap-2">
-                                <span class="font-black text-indigo-600 text-sm">${com.cCount}</span>
+                                <span class="font-black text-indigo-600 text-sm">${com.cCount || 0}</span>
                                 <span class="text-[11px] font-bold text-slate-400">
-                                    <span class="text-emerald-600">(${com.cApto} compras)</span> 
-                                    <span class="text-rose-500">(${com.cNoApto} sin compra)</span>
+                                    <span class="text-emerald-600">(${com.cApto || 0} compras)</span> 
+                                    <span class="text-rose-500">(${com.cNoApto || 0} sin compra)</span>
                                 </span>
                             </div>
                         </td>
-                        <td class="px-5 py-3.5 whitespace-nowrap">${estadoBtn}</td>
+                        <td class="px-5 py-3.5 text-center whitespace-nowrap">${pildoraEstado}</td>
+                        <td class="px-5 py-3.5 text-right whitespace-nowrap">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="window.abrirModalEditarComercio('${com.uid}', '${safeNombre}', '${safeDireccion}')"
+                                    class="px-2.5 py-1.5 rounded-lg text-indigo-600 hover:bg-indigo-50 font-bold text-xs flex items-center gap-1 transition-colors" title="Editar comercio">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Editar
+                                </button>
+                                <button onclick="window.eliminarComercio('${com.uid}', '${safeNombre}')"
+                                    class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Eliminar comercio">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 `;
                 tbComercios.innerHTML += row;
                 count++;
             });
 
-            if (count === 0) tbComercios.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-slate-400">No hay coincidencias.</td></tr>';
+            if (count === 0) tbComercios.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-slate-400">No hay coincidencias de comercios.</td></tr>';
         }
 
         // --- FILTROS Y RENDER DE CREDENCIALES ---
@@ -856,8 +983,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAkGfzXSIyxDAQjDbxwhDmc0kI4TThqGx8",
@@ -870,66 +996,95 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Expose Firebase tools to global scope for non-module script
+        // Exponer Firebase al scope global
         window.db = db;
         window.doc = doc;
         window.getDoc = getDoc;
         window.setDoc = setDoc;
+        window.addDoc = addDoc;
         window.deleteDoc = deleteDoc;
+        window.updateDoc = updateDoc;
 
-        // Registro de Comercios (CON DIRECCIÓN)
-        const formComercio = document.getElementById('formComercio');
-        formComercio.addEventListener('submit', async (e) => {
+        // FORMULARIO: CREAR NUEVO COMERCIO (DIRECTO SIN LOGIN NI USER/PASS)
+        document.getElementById('formNuevoComercio').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('regBtn');
-            const msg = document.getElementById('regMessage');
+            const btn = document.getElementById('btnGuardarNuevoComercio');
+            const nombre = document.getElementById('nuevoNombre').value.trim();
+            const direccion = document.getElementById('nuevaDireccion').value.trim();
 
-            const nombre = document.getElementById('regNombre').value.trim();
-            const direccion = document.getElementById('regDireccion').value.trim();
-            const user = document.getElementById('regUser').value.trim().toLowerCase();
-            const pass = document.getElementById('regPass').value;
+            if (!nombre || !direccion) return;
 
             btn.disabled = true;
-            btn.textContent = "Registrando comercio...";
-            msg.classList.add('hidden');
+            btn.textContent = "Guardando...";
 
             try {
-                const email = `${user}@latidos.com`;
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                const uid = userCredential.user.uid;
-
-                await setDoc(doc(db, "comercios", uid), {
+                await addDoc(collection(db, "comercios"), {
                     nombre_comercio: nombre,
                     direccion: direccion,
-                    username: user,
-                    email: email,
+                    inactivo: false,
                     createdAt: new Date().toISOString()
                 });
 
-                // Evitar que el admin quede deslogueado por la sesión del nuevo usuario
-                await signOut(auth);
-
-                msg.textContent = "Comercio registrado con éxito con su dirección de mapeo.";
-                msg.className = "text-xs font-bold text-center p-3 rounded-xl bg-emerald-50 text-emerald-600 block border border-emerald-200";
-                formComercio.reset();
-                loadStats(); // Refrescar estadísticas
-            } catch (error) {
-                console.error(error);
-                msg.textContent = "Error al crear: " + error.message;
-                msg.className = "text-xs font-bold text-center p-3 rounded-xl bg-rose-50 text-rose-600 block border border-rose-200";
+                cerrarModalNuevoComercio();
+                loadStats();
+            } catch (err) {
+                console.error("Error al crear comercio:", err);
+                alert("Error al crear comercio: " + err.message);
             } finally {
                 btn.disabled = false;
-                btn.textContent = "Dar de Alta Comercio";
+                btn.textContent = "Guardar Comercio";
             }
         });
+
+        // FORMULARIO: EDITAR COMERCIO EXISTENTE
+        document.getElementById('formEditarComercio').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnGuardarEdicionComercio');
+            const id = document.getElementById('editComercioId').value;
+            const nombre = document.getElementById('editNombre').value.trim();
+            const direccion = document.getElementById('editDireccion').value.trim();
+
+            if (!id || !nombre) return;
+
+            btn.disabled = true;
+            btn.textContent = "Actualizando...";
+
+            try {
+                await updateDoc(doc(db, "comercios", id), {
+                    nombre_comercio: nombre,
+                    direccion: direccion
+                });
+
+                cerrarModalEditarComercio();
+                loadStats();
+            } catch (err) {
+                console.error("Error al actualizar comercio:", err);
+                alert("Error al actualizar comercio: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Guardar Cambios";
+            }
+        });
+
+        // Eliminar comercio
+        window.eliminarComercio = async (uid, nombre) => {
+            if (confirm(`¿Estás seguro de que deseas eliminar el comercio "${nombre}"?`)) {
+                try {
+                    await deleteDoc(doc(db, "comercios", uid));
+                    loadStats();
+                } catch (e) {
+                    console.error("Error al eliminar comercio:", e);
+                    alert("No se pudo eliminar el comercio: " + e.message);
+                }
+            }
+        };
 
         // Dashboard Stats
         async function loadStats() {
             try {
-                // 1. Credenciales
+                // 1. Credenciales / Beneficiarias
                 const credSnap = await getDocs(collection(db, "credenciales"));
                 window.allCredenciales = [];
                 let activas = 0;
@@ -945,15 +1100,15 @@
                         const vDate = new Date(cred.vencimientoAsDate);
                         if (vDate > hoy) {
                             activas++;
-                            estadoStr = `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">Activa</span>`;
+                            estadoStr = `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">Apta</span>`;
                         } else {
                             inactivas++;
                             isActiva = false;
-                            estadoStr = `<span class="bg-rose-50 text-rose-600 border border-rose-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">Inactiva</span>`;
+                            estadoStr = `<span class="bg-rose-50 text-rose-600 border border-rose-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">No Apta (Vencida)</span>`;
                         }
                     } else {
                         activas++;
-                        estadoStr = `<span class="bg-indigo-50 text-indigo-600 border border-indigo-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">Activa</span>`;
+                        estadoStr = `<span class="bg-emerald-50 text-emerald-600 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-black uppercase">Apta</span>`;
                     }
 
                     cred.isActiva = isActiva;
@@ -961,21 +1116,15 @@
                     window.allCredenciales.push(cred);
                 });
 
-                document.getElementById('stat-alcance').textContent = window.allCredenciales.length;
+                // Asignar a tarjetas de KPI
+                const totalPersonas = window.allCredenciales.length;
+                document.getElementById('stat-alcance').textContent = totalPersonas;
                 document.getElementById('stat-activas').textContent = activas;
                 document.getElementById('stat-inactivas').textContent = inactivas;
 
                 if (window.renderCredenciales) window.renderCredenciales();
 
-                // 2. Comercios
-                const comSnap = await getDocs(collection(db, "comercios"));
-                const comercioFilterSelect = document.getElementById('filter-visita-comercio');
-                comerciosMap = {};
-
-                // Limpiar selector de comercios para filtro
-                comercioFilterSelect.innerHTML = '<option value="todos">Todos los comercios</option>';
-
-                // 3. Visitas y Operaciones en Comercios
+                // 2. Visitas y Operaciones en Comercios
                 let visitasDocs = [];
                 try {
                     const visSnap = await getDocs(collection(db, "visitas"));
@@ -985,10 +1134,10 @@
                         visitasDocs.push(vData);
                     });
                 } catch (visErr) {
-                    console.warn("No se pudieron cargar visitas, intentando consultas:", visErr);
+                    console.warn("No se pudieron cargar visitas:", visErr);
                 }
 
-                // Si no hay visitas registradas aún, cargar historial de consultas legacy para no dejar la pantalla en 0
+                // Cargar también historial de consultas legacy si existieran
                 if (visitasDocs.length === 0) {
                     try {
                         const conSnap = await getDocs(collection(db, "consultas"));
@@ -1064,7 +1213,11 @@
                 // Renderizar tabla de visitas
                 if (window.renderVisitas) window.renderVisitas();
 
-                // Procesar Comercios
+                // 3. Comercios
+                const comSnap = await getDocs(collection(db, "comercios"));
+                const comercioFilterSelect = document.getElementById('filter-visita-comercio');
+                if (comercioFilterSelect) comercioFilterSelect.innerHTML = '<option value="todos">Todos los comercios</option>';
+
                 window.allComercios = [];
                 let cActivos = 0;
                 let cInactivos = 0;
@@ -1081,11 +1234,12 @@
                     if (com.inactivo === true) cInactivos++;
                     else {
                         cActivos++;
-                        // Añadir al filtro de comercios
-                        const opt = document.createElement('option');
-                        opt.value = com.uid;
-                        opt.textContent = com.nombre_comercio || com.username;
-                        comercioFilterSelect.appendChild(opt);
+                        if (comercioFilterSelect) {
+                            const opt = document.createElement('option');
+                            opt.value = com.uid;
+                            opt.textContent = com.nombre_comercio || com.username;
+                            comercioFilterSelect.appendChild(opt);
+                        }
                     }
 
                     window.allComercios.push(com);
@@ -1219,7 +1373,7 @@
 
         window.loadStats = loadStats;
 
-        // Toggle estado del comercio (Activo / Inactivo)
+        // Toggle estado del comercio (Activo / Inactivo con píldora)
         window.toggleComercio = async (uid, isCurrentlyInactive) => {
             try {
                 await updateDoc(doc(db, "comercios", uid), {
